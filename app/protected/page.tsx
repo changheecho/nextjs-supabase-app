@@ -1,5 +1,6 @@
 import { InfoIcon } from "lucide-react";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 
 import { ProfileCard } from "@/components/profile-card";
 import { ProfileEditForm } from "@/components/profile-edit-form";
@@ -39,9 +40,47 @@ async function UserProfile() {
   };
 }
 
-export default async function ProtectedPage() {
-  const { profile, email } = await UserProfile();
+// 프로필 정보를 렌더링하는 클라이언트 컴포넌트
+function ProfileContent({
+  profile,
+  email,
+}: {
+  profile: Profile;
+  email: string;
+}) {
+  return (
+    <div className="flex flex-col gap-8">
+      <div>
+        <h2 className="mb-4 text-2xl font-bold">프로필 정보</h2>
+        <ProfileCard profile={profile} email={email} />
+      </div>
 
+      <div>
+        <h2 className="mb-4 text-2xl font-bold">프로필 수정</h2>
+        <ProfileEditForm profile={profile} />
+      </div>
+    </div>
+  );
+}
+
+// 로딩 중 보여줄 폴백 UI
+function ProfileSkeleton() {
+  return (
+    <div className="flex flex-col gap-8">
+      <div>
+        <h2 className="mb-4 text-2xl font-bold">프로필 정보</h2>
+        <div className="h-32 animate-pulse rounded-lg bg-muted" />
+      </div>
+
+      <div>
+        <h2 className="mb-4 text-2xl font-bold">프로필 수정</h2>
+        <div className="h-64 animate-pulse rounded-lg bg-muted" />
+      </div>
+    </div>
+  );
+}
+
+export default function ProtectedPage() {
   return (
     <div className="flex w-full flex-1 flex-col gap-12">
       <div className="w-full">
@@ -51,17 +90,16 @@ export default async function ProtectedPage() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-8">
-        <div>
-          <h2 className="mb-4 text-2xl font-bold">프로필 정보</h2>
-          <ProfileCard profile={profile} email={email} />
-        </div>
-
-        <div>
-          <h2 className="mb-4 text-2xl font-bold">프로필 수정</h2>
-          <ProfileEditForm profile={profile} />
-        </div>
-      </div>
+      <Suspense fallback={<ProfileSkeleton />}>
+        <ProfileContentAsync />
+      </Suspense>
     </div>
   );
+}
+
+// 데이터 페칭을 담당하는 별도의 서버 컴포넌트
+async function ProfileContentAsync() {
+  const { profile, email } = await UserProfile();
+
+  return <ProfileContent profile={profile} email={email} />;
 }
