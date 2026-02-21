@@ -1,25 +1,32 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { createClient } from "@/lib/supabase/client"
-import { Profile } from "@/types/database"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { createClient } from "@/lib/supabase/client";
+import { Profile } from "@/types/database";
 
 // 프로필 수정 폼 컴포넌트
 interface ProfileEditFormProps {
-  profile: Profile
+  profile: Profile;
 }
 
 export function ProfileEditForm({ profile }: ProfileEditFormProps) {
-  const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [successMessage, setSuccessMessage] = useState<string | null>(null)
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   // 폼 상태 관리
   const [formData, setFormData] = useState({
@@ -27,28 +34,28 @@ export function ProfileEditForm({ profile }: ProfileEditFormProps) {
     full_name: profile.full_name || "",
     website: profile.website || "",
     bio: profile.bio || "",
-  })
+  });
 
   // 입력 값 변경 핸들러
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    const { name, value } = e.target
-    setFormData(prev => ({
+    const { name, value } = e.target;
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
-    }))
-  }
+      [name]: value,
+    }));
+  };
 
   // 폼 제출 핸들러
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError(null)
-    setSuccessMessage(null)
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+    setSuccessMessage(null);
 
     try {
-      const supabase = createClient()
+      const supabase = createClient();
 
       // profiles 테이블 업데이트
       const { error: updateError } = await supabase
@@ -59,32 +66,33 @@ export function ProfileEditForm({ profile }: ProfileEditFormProps) {
           website: formData.website || null,
           bio: formData.bio || null,
         })
-        .eq("id", profile.id)
+        .eq("id", profile.id);
 
       if (updateError) {
         // username 중복 에러 처리
         if (updateError.message.includes("unique")) {
-          setError("이미 사용 중인 사용자명입니다.")
+          setError("이미 사용 중인 사용자명입니다.");
         } else {
-          setError(updateError.message || "프로필 업데이트에 실패했습니다.")
+          setError(updateError.message || "프로필 업데이트에 실패했습니다.");
         }
-        return
+        return;
       }
 
       // 성공 메시지 표시
-      setSuccessMessage("프로필이 성공적으로 업데이트되었습니다.")
+      setSuccessMessage("프로필이 성공적으로 업데이트되었습니다.");
 
       // 서버 컴포넌트 재조회
       setTimeout(() => {
-        router.refresh()
-      }, 500)
+        router.refresh();
+      }, 500);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "예상치 못한 오류가 발생했습니다."
-      setError(errorMessage)
+      const errorMessage =
+        err instanceof Error ? err.message : "예상치 못한 오류가 발생했습니다.";
+      setError(errorMessage);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <Card>
@@ -96,14 +104,14 @@ export function ProfileEditForm({ profile }: ProfileEditFormProps) {
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* 에러 메시지 */}
           {error && (
-            <div className="p-3 rounded-md bg-red-50 text-red-600 text-sm">
+            <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">
               {error}
             </div>
           )}
 
           {/* 성공 메시지 */}
           {successMessage && (
-            <div className="p-3 rounded-md bg-green-50 text-green-600 text-sm">
+            <div className="rounded-md bg-green-50 p-3 text-sm text-green-600">
               {successMessage}
             </div>
           )}
@@ -171,5 +179,5 @@ export function ProfileEditForm({ profile }: ProfileEditFormProps) {
         </form>
       </CardContent>
     </Card>
-  )
+  );
 }

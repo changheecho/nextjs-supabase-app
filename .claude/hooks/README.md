@@ -100,7 +100,9 @@ Claude Code가 도구 사용 권한을 요청하면 Slack에 자동으로 알림
 설명: npm 패키지 설치
 명령어:
 ```
+
 npm install lodash
+
 ```
 
 Claude Code가 도구 사용 권한을 요청하고 있습니다.
@@ -109,6 +111,7 @@ _2026-02-07 14:30:45_
 ```
 
 **Slack 모바일에서**:
+
 1. 알림 수신
 2. 데스크톱의 Claude Code에서 권한 승인/거부
 3. 작업 진행
@@ -155,6 +158,7 @@ echo '{
 ```
 
 **예상 결과**:
+
 - Slack 채널에 "Claude Code 권한 요청" 메시지 수신
 - 도구: `Bash`
 - 명령어: `npm install test-package`
@@ -172,6 +176,7 @@ echo '{
 ```
 
 **예상 결과**:
+
 - Slack 채널에 "Claude Code 작업 완료" 메시지 수신
 - 작업 ID: #test-001
 - 제목: 테스트 작업
@@ -258,6 +263,7 @@ jq '.hooks.PermissionRequest, .hooks.TaskCompleted' < .claude/settings.local.jso
 ```
 
 **자주 발생하는 오류**:
+
 - Hook 경로가 잘못됨
 - JSON 문법 오류 (따옴표, 쉼표 누락)
 - 실행 권한 없음
@@ -337,13 +343,13 @@ Hook 실행 로그는 `.claude/hooks/logs/slack-hooks.log`에 저장됩니다:
 
 ### 각 파일의 역할
 
-| 파일 | 역할 | 수정 필요 |
-|------|------|---------|
-| `permission-request-slack.sh` | 권한 요청 알림 전송 | ❌ |
-| `task-completed-slack.sh` | 작업 완료 알림 전송 | ❌ |
-| `lib/slack-utils.sh` | 공통 함수 (URL 로드, 메시지 전송) | ❌ |
-| `.env` | Slack Webhook URL | ✅ 필요 |
-| `.claude/settings.local.json` | Hook 설정 | ✅ 이미 설정됨 |
+| 파일                          | 역할                              | 수정 필요      |
+| ----------------------------- | --------------------------------- | -------------- |
+| `permission-request-slack.sh` | 권한 요청 알림 전송               | ❌             |
+| `task-completed-slack.sh`     | 작업 완료 알림 전송               | ❌             |
+| `lib/slack-utils.sh`          | 공통 함수 (URL 로드, 메시지 전송) | ❌             |
+| `.env`                        | Slack Webhook URL                 | ✅ 필요        |
+| `.claude/settings.local.json` | Hook 설정                         | ✅ 이미 설정됨 |
 
 ---
 

@@ -147,22 +147,22 @@ async function SlowChart() {
 ### 🔄 New: after() API 활용
 
 ```typescript
-import { after } from 'next/server'
+import { after } from "next/server";
 
 export async function POST(request: Request) {
-  const body = await request.json()
+  const body = await request.json();
 
   // 즉시 응답 반환
-  const result = await processUserData(body)
+  const result = await processUserData(body);
 
   // 🔄 비블로킹 작업은 after()로 처리
   after(async () => {
-    await sendAnalytics(result)
-    await updateCache(result.id)
-    await sendNotification(result.userId)
-  })
+    await sendAnalytics(result);
+    await updateCache(result.id);
+    await sendNotification(result.userId);
+  });
 
-  return Response.json({ success: true, id: result.id })
+  return Response.json({ success: true, id: result.id });
 }
 ```
 
@@ -175,22 +175,22 @@ export async function getProductData(id: string) {
     // 🔄 Next.js 15.5.3 새로운 캐시 옵션
     next: {
       revalidate: 3600, // 1시간 캐시
-      tags: [`product-${id}`, 'products'], // 태그 기반 무효화
+      tags: [`product-${id}`, "products"], // 태그 기반 무효화
     },
-  })
+  });
 
-  return data.json()
+  return data.json();
 }
 
 // 캐시 무효화
-import { revalidateTag } from 'next/cache'
+import { revalidateTag } from "next/cache";
 
 export async function updateProduct(id: string, data: ProductData) {
-  await updateDatabase(id, data)
+  await updateDatabase(id, data);
 
   // 관련 캐시 무효화
-  revalidateTag(`product-${id}`)
-  revalidateTag('products')
+  revalidateTag(`product-${id}`);
+  revalidateTag("products");
 }
 ```
 
@@ -198,17 +198,18 @@ export async function updateProduct(id: string, data: ProductData) {
 
 ```typescript
 // next.config.ts
-import type { NextConfig } from 'next'
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   // ✅ React Compiler 안정화 (v16에서 experimental 제거)
   reactCompiler: true,
-}
+};
 
-export default nextConfig
+export default nextConfig;
 ```
 
 React Compiler는 컴포넌트의 렌더링 성능을 자동으로 최적화합니다:
+
 - 불필요한 리렌더링 자동 방지
 - 수동 메모이제이션 (`React.memo`, `useMemo`) 대체
 - 런타임 성능 향상
@@ -217,16 +218,16 @@ React Compiler는 컴포넌트의 렌더링 성능을 자동으로 최적화합�
 
 ```typescript
 // next.config.ts
-import type { NextConfig } from 'next'
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   // ✅ v16 Turbopack 최적화 설정 (최상위 레벨)
   turbopack: {
     rules: {
       // CSS 모듈 최적화
-      '*.module.css': {
-        loaders: ['css-loader'],
-        as: 'css',
+      "*.module.css": {
+        loaders: ["css-loader"],
+        as: "css",
       },
     },
   },
@@ -236,18 +237,19 @@ const nextConfig: NextConfig = {
     turbopackFileSystemCacheForDev: true,
     // 🔄 패키지 import 최적화
     optimizePackageImports: [
-      'lucide-react',
-      '@radix-ui/react-icons',
-      'date-fns',
-      'lodash-es',
+      "lucide-react",
+      "@radix-ui/react-icons",
+      "date-fns",
+      "lodash-es",
     ],
   },
-}
+};
 
-export default nextConfig
+export default nextConfig;
 ```
 
 **v15 → v16 마이그레이션 변경사항:**
+
 - `experimental.turbo` → `turbopack` (최상위 레벨)
 - Turbopack 파일시스템 캐싱 추가로 개발 빌드 속도 향상
 
@@ -299,31 +301,32 @@ export default function UserForm() {
 
 ```typescript
 // proxy.ts (v15의 middleware.ts에서 변경됨)
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from "next/server";
 
 // ✅ v16에서 proxy로 함수명 및 파일명 변경
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
-}
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+};
 
 // ✅ 함수명: middleware() → proxy()
 export function proxy(request: NextRequest) {
   // Node.js Runtime 전용 - Edge Runtime 미지원
-  const crypto = require('crypto')
-  const hash = crypto.createHash('sha256')
+  const crypto = require("crypto");
+  const hash = crypto.createHash("sha256");
 
   // 인증 로직
-  const token = request.cookies.get('auth-token')?.value
+  const token = request.cookies.get("auth-token")?.value;
 
   if (!token) {
-    return NextResponse.redirect(new URL('/login', request.url))
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  return NextResponse.next()
+  return NextResponse.next();
 }
 ```
 
 **⚠️ v16 주요 변경사항:**
+
 - **파일명:** `middleware.ts` → `proxy.ts`
 - **함수명:** `export function middleware()` → `export function proxy()`
 - **설정:** `skipMiddlewareUrlNormalize` → `skipProxyUrlNormalize`
@@ -333,15 +336,16 @@ export function proxy(request: NextRequest) {
 기존 `middleware.ts` 파일을 그대로 유지할 수 있으며, `proxy.ts`와 함께 사용 가능합니다.
 
 **next.config.ts 설정:**
+
 ```typescript
-import type { NextConfig } from 'next'
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   // ✅ skipProxyUrlNormalize (v15의 skipMiddlewareUrlNormalize에서 변경)
   skipProxyUrlNormalize: true,
-}
+};
 
-export default nextConfig
+export default nextConfig;
 ```
 
 ### ESLint 통합 변경 (v16)
@@ -355,19 +359,20 @@ const nextConfig: NextConfig = {
   // eslint: {
   //   dirs: ['pages', 'utils', 'components'],
   // },
-
   // v16에서는 ESLint CLI를 직접 사용해야 함
-}
+};
 
-export default nextConfig
+export default nextConfig;
 ```
 
 **v16 ESLint 변경사항:**
+
 - `next lint` 명령어 제거
 - `next build` 시 자동 린팅 제거
 - ESLint 또는 Biome CLI를 직접 사용해야 함
 
 **권장되는 ESLint 사용 방법:**
+
 ```bash
 # ESLint CLI 직접 사용
 npx eslint .
@@ -388,23 +393,23 @@ npx biome check .
 
 ```typescript
 // app/api/admin/route.ts
-import { unauthorized, forbidden } from 'next/server'
+import { unauthorized, forbidden } from "next/server";
 
 export async function GET(request: Request) {
-  const session = await getSession(request)
+  const session = await getSession(request);
 
   // 🔄 새로운 unauthorized 함수
   if (!session) {
-    return unauthorized()
+    return unauthorized();
   }
 
   // 🔄 새로운 forbidden 함수
   if (!session.user.isAdmin) {
-    return forbidden()
+    return forbidden();
   }
 
-  const data = await getAdminData()
-  return Response.json(data)
+  const data = await getAdminData();
+  return Response.json(data);
 }
 ```
 
@@ -418,6 +423,7 @@ npx @next/codemod@latest upgrade .
 ```
 
 **Codemod가 자동으로 처리하는 항목:**
+
 - `next.config.js`의 `experimental.turbo` → `turbopack` 이전
 - `middleware.ts` → `proxy.ts` 파일명/함수명 변경
 - `skipMiddlewareUrlNormalize` → `skipProxyUrlNormalize` 설정 업데이트
@@ -425,6 +431,7 @@ npx @next/codemod@latest upgrade .
 - `experimental_ppr` Route Segment Config 제거
 
 **마이그레이션 후 확인 사항:**
+
 1. `proxy.ts` 파일이 올바르게 생성되었는지 확인
 2. `next.config.ts`에서 새로운 설정이 적용되었는지 확인
 3. `npm run typecheck` 실행하여 타입 에러 확인
@@ -620,6 +627,7 @@ npm run build
 ```
 
 **v16 변경사항:**
+
 - `npm run lint` (next lint) 제거 → ESLint CLI 직접 사용
 - `next build` 시 자동 린팅 제거 → 명시적으로 ESLint 실행
 

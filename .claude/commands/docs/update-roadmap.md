@@ -16,18 +16,22 @@ description: ROADMAP.md의 완료된 태스크를 체크하고 Stage 현황을 �
 ### Stage 1 검증 항목 (프로젝트 골격)
 
 **1-1. 환경 변수 설정**
+
 - [ ] `src/lib/env.ts` 파일 존재 확인
 - [ ] `npm run dev` 환경 변수 에러 검증 항목
 
 **1-2. @notionhq/client v5 API 호환성 검증**
+
 - [ ] `src/app/api/notion/invoices/route.ts` 존재 확인
 - [ ] Notion 데이터 조회 함수 구현 확인
 
 **1-3. Supabase 데이터베이스 초기화**
+
 - [ ] `src/lib/supabase/server.ts` 존재 확인
 - [ ] Share Links 테이블 관련 파일 확인
 
 **1-4. Proxy 설정 검증 (v16 변경)**
+
 - [ ] `proxy.ts` 존재 확인 (v15의 middleware.ts에서 변경)
 - [ ] proxy() 함수명 확인 (v15의 middleware() → v16의 proxy())
 - [ ] 인증 보호 로직 구현 확인
@@ -35,19 +39,23 @@ description: ROADMAP.md의 완료된 태스크를 체크하고 Stage 현황을 �
 ### Stage 2 검증 항목 (공통 모듈)
 
 **2-1. Notion 데이터 조회 함수**
+
 - [ ] `src/lib/notion/items.ts` 파일 존재 확인
 - [ ] `getInvoices()`, `getInvoiceById()` 함수 구현
 
 **2-2. ShareLink CRUD**
+
 - [ ] `src/lib/supabase/share-links.ts` 파일 존재 확인
 
 **2-3. 로그인/인증 기능**
+
 - [ ] `src/app/login/page.tsx` 파일 존재 확인
 - [ ] Supabase Auth 연동 확인
 
 ### Stage 3 검증 항목 (핵심 기능)
 
 **Phase 2: 대시보드 UI (Day 4 ~ Day 6)**
+
 - [ ] `src/app/dashboard/page.tsx` 파일 존재 및 내용 확인
   - 목록 테이블 구현 확인
   - Suspense + Skeleton 로딩 상태 확인
@@ -55,6 +63,7 @@ description: ROADMAP.md의 완료된 태스크를 체크하고 Stage 현황을 �
 - [ ] 헤더 로그아웃 버튼 구현 확인
 
 **Phase 3: 웹 뷰어 컴포넌트 (Day 7 ~ Day 8)**
+
 - [ ] `src/components/invoice/InvoiceViewer.tsx` 파일 존재 확인
   - 전문적인 인보이스 레이아웃
   - 응답형 디자인 구현
@@ -65,10 +74,12 @@ description: ROADMAP.md의 완료된 태스크를 체크하고 Stage 현황을 �
 - [ ] `src/components/invoice/InvoiceSkeleton.tsx` 파일 존재 확인
 
 **Phase 2-3 통합: 공유 링크 (Day 6 ~ Day 7)**
+
 - [ ] `/api/share-links` POST 엔드포인트 구현 확인
 - [ ] 대시보드에서 공유 링크 복사 버튼 활성화 확인
 
 **Phase 2-3 페이지 리팩토링 (Day 9 ~ Day 10)**
+
 - [ ] `src/app/dashboard/invoice/[id]/page.tsx` 리팩토링 완료
 - [ ] `src/app/invoice/[shareId]/page.tsx` 리팩토링 완료
   - `InvoiceViewer` 컴포넌트 사용
@@ -80,29 +91,35 @@ description: ROADMAP.md의 완료된 태스크를 체크하고 Stage 현황을 �
 ### Stage 4 검증 항목 (추가 기능 - PDF)
 
 **4-1. 한글 폰트 TTF 파일 준비**
+
 - [ ] `public/fonts/NotoSansKR-Regular.ttf` 파일 존재 확인
 - [ ] `public/fonts/NotoSansKR-Bold.ttf` 파일 존재 확인 (선택)
 
 **4-2. PDF 문서 컴포넌트**
+
 - [ ] `src/components/invoice/invoice-pdf-document.tsx` 파일 존재 확인
   - TTF 폰트 소스 설정 확인
   - 레이아웃 구현 확인
 
 **4-3. PDF 생성 API**
+
 - [ ] `src/app/api/invoice/[shareId]/pdf/route.ts` 파일 존재 확인
   - Node.js Runtime 설정 확인
   - PDF 응답 로직 확인
 
 **4-4. PDF 다운로드 클라이언트**
+
 - [ ] `InvoiceActions.tsx`에 PDF 다운로드 로직 구현 확인
 
 ### Stage 5 검증 항목 (최적화 및 배포)
 
 **5-1. 에러 페이지**
+
 - [ ] `src/app/error.tsx` 구현 확인
 - [ ] `src/app/not-found.tsx` 구현 확인
 
 **5-2. 빌드 및 린트**
+
 - [ ] `npm run build` 오류 0건 확인
 
 ## Phase 3: ROADMAP.md 업데이트
@@ -110,10 +127,12 @@ description: ROADMAP.md의 완료된 태스크를 체크하고 Stage 현황을 �
 완료된 파일들을 확인한 후, ROADMAP.md의 다음 섹션을 업데이트합니다:
 
 ### Stage 1 섹션 업데이트
+
 - Stage 1의 모든 기술 태스크 항목에서 [ ]를 [x]로 변경
 - "현황" 필드를 "✅ **완료** (2026-02-18)"로 변경
 
 ### Stage 3 섹션 업데이트
+
 - Phase 2, 3 관련 항목들을 [x]로 표시
   - InvoiceViewer.tsx 구현 확인 시 체크
   - InvoiceStatusBadge.tsx 구현 확인 시 체크
@@ -125,6 +144,7 @@ description: ROADMAP.md의 완료된 태스크를 체크하고 Stage 현황을 �
   - 예: "부분 완료, 통합 필요" → "완료" 또는 "일부 완료"
 
 ### 구현 현황 테이블 업데이트 (43~79줄)
+
 - 완료된 파일의 "구현 상태" 컬럼을 다시 확인
 - 미구현 구성 요소 목록(72~79줄)에서 실제 구현된 항목 제거
   - InvoiceViewer.tsx 구현됨 → 목록에서 제거

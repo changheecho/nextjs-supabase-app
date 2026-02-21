@@ -1,17 +1,23 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Profile } from "@/types/database";
 
 // 프로필 카드 컴포넌트 - 사용자 프로필 정보 표시
 interface ProfileCardProps {
-  profile: Profile
-  email: string
+  profile: Profile;
+  email: string;
 }
-
 
 export function ProfileCard({ profile, email }: ProfileCardProps) {
   // 프로필이 비어있는지 확인
-  const isProfileEmpty = !profile.full_name && !profile.username && !profile.website && !profile.bio
+  const isProfileEmpty =
+    !profile.full_name && !profile.username && !profile.website && !profile.bio;
 
   return (
     <Card>
@@ -21,12 +27,16 @@ export function ProfileCard({ profile, email }: ProfileCardProps) {
             <CardTitle>{profile.full_name || "프로필 없음"}</CardTitle>
             <CardDescription>{email}</CardDescription>
           </div>
-          {profile.username && <Badge variant="secondary">{profile.username}</Badge>}
+          {profile.username && (
+            <Badge variant="secondary">{profile.username}</Badge>
+          )}
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
         {isProfileEmpty ? (
-          <div className="text-sm text-muted-foreground italic">프로필을 작성해 보세요.</div>
+          <div className="text-sm italic text-muted-foreground">
+            프로필을 작성해 보세요.
+          </div>
         ) : (
           <>
             {profile.bio && (
@@ -52,5 +62,5 @@ export function ProfileCard({ profile, email }: ProfileCardProps) {
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

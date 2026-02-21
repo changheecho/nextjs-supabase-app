@@ -1,4 +1,5 @@
 import { createBrowserClient } from "@supabase/ssr";
+
 import { Database } from "@/types/database";
 
 // 브라우저 클라이언트 생성 함수
