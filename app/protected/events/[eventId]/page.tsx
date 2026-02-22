@@ -1,7 +1,8 @@
-import { ArrowLeft, MapPin, Users, Copy } from "lucide-react";
+import { ArrowLeft, MapPin, Users } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { CopyInviteLinkButton } from "@/components/events/copy-invite-link-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -127,18 +128,7 @@ export default async function EventDetailPage({
 
           <Card>
             <CardContent className="pt-6">
-              <Button
-                variant="outline"
-                size="sm"
-                className="w-full"
-                onClick={() => {
-                  console.log(`초대 코드 복사: ${event.invite_code}`);
-                  alert(`초대 코드: ${event.invite_code}`);
-                }}
-              >
-                <Copy className="mr-2 h-4 w-4" />
-                초대 링크 복사
-              </Button>
+              <CopyInviteLinkButton inviteCode={event.invite_code} />
             </CardContent>
           </Card>
         </div>
