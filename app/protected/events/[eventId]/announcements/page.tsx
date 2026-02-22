@@ -7,13 +7,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { getEventAnnouncements } from "@/lib/mock-data";
 
 interface AnnouncementsPageProps {
-  params: {
+  params: Promise<{
     eventId: string;
-  };
+  }>;
 }
 
-export default function AnnouncementsPage({ params }: AnnouncementsPageProps) {
-  const { eventId } = params;
+export default async function AnnouncementsPage({
+  params,
+}: AnnouncementsPageProps) {
+  const { eventId } = await params;
   const announcements = getEventAnnouncements(eventId);
 
   // 핀 공지 상단에 고정

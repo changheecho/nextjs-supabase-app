@@ -20,16 +20,18 @@ import {
 import { CATEGORY_COLOR } from "@/lib/schemas";
 
 interface EventDetailPageProps {
-  params: {
+  params: Promise<{
     eventId: string;
-  };
+  }>;
 }
 
 /**
  * 모임 홈 페이지
  */
-export default function EventDetailPage({ params }: EventDetailPageProps) {
-  const { eventId } = params;
+export default async function EventDetailPage({
+  params,
+}: EventDetailPageProps) {
+  const { eventId } = await params;
 
   // 모임 조회
   const event = mockEvents.find((e) => e.id === eventId);

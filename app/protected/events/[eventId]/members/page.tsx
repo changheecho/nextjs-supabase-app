@@ -9,13 +9,13 @@ import { getEventMembers } from "@/lib/mock-data";
 import type { EventMember } from "@/lib/mock-data";
 
 interface MembersPageProps {
-  params: {
+  params: Promise<{
     eventId: string;
-  };
+  }>;
 }
 
-export default function MembersPage({ params }: MembersPageProps) {
-  const { eventId } = params;
+export default async function MembersPage({ params }: MembersPageProps) {
+  const { eventId } = await params;
   const members = getEventMembers(eventId);
 
   const pendingMembers = members.filter((m) => m.status === "pending");

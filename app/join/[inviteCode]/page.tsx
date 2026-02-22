@@ -14,13 +14,13 @@ import { getEventByInviteCode, getApprovedMemberCount } from "@/lib/mock-data";
 import { CATEGORY_COLOR } from "@/lib/schemas";
 
 interface JoinPageProps {
-  params: {
+  params: Promise<{
     inviteCode: string;
-  };
+  }>;
 }
 
-export default function JoinPage({ params }: JoinPageProps) {
-  const { inviteCode } = params;
+export default async function JoinPage({ params }: JoinPageProps) {
+  const { inviteCode } = await params;
 
   const event = getEventByInviteCode(inviteCode);
 
