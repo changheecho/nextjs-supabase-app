@@ -26,14 +26,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.className} antialiased`}>
+      <body className={`${geistSans.className} bg-muted/50 antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <div className="relative mx-auto flex min-h-screen w-full max-w-[480px] flex-col overflow-x-hidden border-x bg-background shadow-2xl">
+            {children}
+          </div>
         </ThemeProvider>
       </body>
     </html>
