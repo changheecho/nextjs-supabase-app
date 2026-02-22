@@ -86,10 +86,12 @@ npm install react-hook-form zod @hookform/resolvers date-fns
 
 #### 1.4 UI 페이지 구현 (모킹 데이터 사용)
 
-- [ ] 모임 목록 페이지 (`/protected/events`)
+- [ ] 내 이벤트 페이지 (`/protected/events`) - 모바일 최적화
   - "내가 주최한 모임" / "참여 중인 모임" 탭
   - 모임 카드 목록 (날짜순 정렬)
   - Skeleton 로딩 상태 UI
+  - 모바일 반응형 디자인 (375px 이상 최적화)
+  - 터치 친화적 버튼 및 탭 네비게이션
 
 - [ ] 모임 생성 페이지 (`/protected/events/new`)
   - 폼 필드: 제목, 카테고리, 날짜/시간, 장소, 최대 인원, 계좌 정보
@@ -477,7 +479,7 @@ UI/UX가 최종 확정된 후 DB 스키마를 설계하면, 실제 필요한 필
 ### 구현 기능
 
 - **F001 모임 생성**: 제목, 카테고리, 날짜/시간, 장소, 최대 인원, 계좌 정보 입력. 8자리 초대코드 자동 생성
-- **F002 모임 목록**: 내가 주최한 모임 / 참여 중인 모임 탭 구분 표시
+- **F002 내 이벤트 목록**: 내가 주최한 모임 / 참여 중인 모임 탭 구분 표시 (모바일 최적화)
 - **F003 모임 홈**: 핀 공지 요약, 기본 정보, 인원 현황, 초대 링크 복사 버튼
 - **F004 초대 링크 입장**: 비인증 사용자 모임 정보 미리보기 허용, 로그인 후 자동 참여 신청 처리
 - **F005 참여 신청**: 참여자 모임 신청 및 메모 입력
@@ -511,11 +513,13 @@ UI/UX가 최종 확정된 후 DB 스키마를 설계하면, 실제 필요한 필
   - **아직 Supabase INSERT 없이 콘솔 로그로 폼 데이터만 출력**
   - 폼 제출 후 모킹 이벤트 ID로 `/protected/events/[eventId]`로 리디렉션
 
-- [Complexity: M] 모임 목록 페이지 UI 구현 (Owner: Frontend)
+- [Complexity: M] 내 이벤트 페이지 UI 구현 - 모바일 최적화 (Owner: Frontend)
   - 파일: `app/protected/events/page.tsx`
   - 모킹 데이터로 "내가 주최한 모임" / "참여 중인 모임" 탭 표시
   - 각 모임 카드: 제목, 날짜, 장소, 현재 참여자 수 / 최대 인원 표시
   - Suspense + Skeleton 패턴 적용 (로딩 상태 미리 구성)
+  - 모바일 반응형 디자인: 375px 이상에서 최적화된 레이아웃
+  - 터치 친화적 버튼 및 탭 네비게이션 (최소 44x44px)
 
 - [Complexity: M] 모임 홈 페이지 UI 구현 (Owner: Frontend)
   - 파일: `app/protected/events/[eventId]/page.tsx`
@@ -557,10 +561,12 @@ UI/UX가 최종 확정된 후 DB 스키마를 설계하면, 실제 필요한 필
   - 정상 입력 후 폼 제출 (콘솔 데이터 로그 확인만)
   - 모바일 뷰포트(375px)에서 폼 입력 UI 검토
 
-- [ ] [Playwright MCP] 모임 목록 페이지 UI 검증
+- [ ] [Playwright MCP] 내 이벤트 페이지 UI 검증 (모바일)
   - 로그인 후 `/protected/events` 접근
   - 탭 전환 애니메이션 확인
   - Skeleton 로딩 상태 표시 확인
+  - 모바일 뷰포트(375px) 레이아웃 확인
+  - 터치 버튼 크기 및 가독성 확인
 
 - [ ] [Playwright MCP] 모임 홈 페이지 통합 테스트
   - 모임 정보 표시 정확성
@@ -588,6 +594,7 @@ UI/UX가 최종 확정된 후 DB 스키마를 설계하면, 실제 필요한 필
 - [ ] 모든 페이지 UI가 모킹 데이터로 정상 렌더링
 - [ ] 폼 유효성 검사 및 오류 메시지 표시 정상
 - [ ] 모바일 뷰포트(375px, 768px, 1024px) 반응형 검증 완료
+- [ ] 내 이벤트 페이지 모바일 UX 최적화 완료 (터치 친화적 UI)
 - [ ] 주요 UX 개선점 식별 및 문서화
 - [ ] 팀 검토 완료 및 피드백 반영
 
@@ -816,9 +823,10 @@ UI/UX가 최종 확정된 후 DB 스키마를 설계하면, 실제 필요한 필
   - `createEvent` Server Action: 폼 데이터 → Supabase events INSERT
   - `invite_code` 서버사이드 자동 생성
 
-- [Complexity: M] 모임 목록 조회 Server Component 구현 (Owner: Frontend)
+- [Complexity: M] 내 이벤트 페이지 조회 Server Component 구현 (Owner: Frontend)
   - `components/events/event-list-server.tsx` 서버 컴포넌트 생성
   - 주최한 모임과 참여 중인 모임 별도 쿼리
+  - 모바일 최적화 레이아웃 (반응형 그리드/리스트)
 
 - [Complexity: M] 모임 홈 조회 Server Component 구현 (Owner: Frontend)
   - `components/events/event-detail-server.tsx` 서버 컴포넌트 생성
@@ -893,9 +901,11 @@ UI/UX가 최종 확정된 후 DB 스키마를 설계하면, 실제 필요한 필
   - 주최자 자신의 모임 참여 신청 불가
 
 - [Complexity: M] 모바일 반응형 UI 최종 검수 (Owner: Frontend)
+  - 내 이벤트 페이지 모바일 레이아웃 최적화 (375px 이상)
   - 날짜/시간 입력 필드 모바일 UX 조정
   - 버튼 터치 영역 최소 44x44px 확보
   - iPad 태블릿 뷰포트(768px) 추가 검수
+  - 모바일 탭 네비게이션 접근성 확인
 
 - [Complexity: S] Skeleton + Loading 상태 일관성 (Owner: Frontend)
   - 각 라우트의 `loading.tsx` 구현 확인
@@ -938,7 +948,9 @@ UI/UX가 최종 확정된 후 DB 스키마를 설계하면, 실제 필요한 필
 - [ ] 주최자가 모임 생성 → 초대 링크 공유 → 참여자 승인 전체 흐름 오류 없이 동작
 - [ ] 공지 작성, 핀 고정, 목록 조회 정상 동작
 - [ ] 비인증 사용자가 초대 링크 → 로그인 → 자동 참여 신청 흐름 정상 동작
+- [ ] 내 이벤트 페이지 모바일 최적화 완료 (375px 이상)
 - [ ] 모든 페이지 모바일 뷰포트(375px)에서 정상 렌더링
+- [ ] 모바일 터치 버튼 접근성 확보 (최소 44x44px)
 - [ ] `npm run lint` 오류 0건
 - [ ] Playwright MCP E2E 주요 시나리오 모두 통과
 
@@ -1167,11 +1179,13 @@ Stage 1 (UI/UX) → Stage 2 (검증) → Stage 3 (DB) → Stage 4 (API) → Stag
 
 ## 📌 체크포인트
 
-**Stage 1 완료 검사 (2026-03-01) - UI/UX 프로토타입 완성**
+**Stage 1 완료 검사 (2026-03-01) - UI/UX 프로토타입 완성 (모바일 최적화)**
 
 - [ ] 모든 페이지가 모킹 데이터로 정상 렌더링됨
 - [ ] 폼 유효성 검증 및 에러 메시지 정상 작동
 - [ ] 모바일 반응형 (375px, 768px) 확인 완료
+- [ ] 내 이벤트 페이지 모바일 UX 검증 완료 (탭 전환, 카드 레이아웃)
+- [ ] 모바일 터치 친화적 버튼 크기 확인 (최소 44x44px)
 - [ ] E2E 테스트 (Playwright) 모두 통과
 - [ ] `npm run lint` 오류 0건
 
@@ -1198,6 +1212,8 @@ Stage 1 (UI/UX) → Stage 2 (검증) → Stage 3 (DB) → Stage 4 (API) → Stag
 - [ ] 참여자 전체 여정 E2E 테스트 통과
   - 초대 링크 → 로그인 → 참여 신청 → 자동 승인
 - [ ] 모바일 테스트 완료 (375px 뷰포트)
+  - 내 이벤트 페이지 모바일 레이아웃 검증 완료
+  - 모바일 기기(iOS, Android)에서 실제 테스트 완료
 - [ ] 성능 테스트: Lighthouse 70 이상
 - [ ] 실제 사용자 피드백 수집 가능
 - **MVP 배포 완료 (베타 테스트 시작)**

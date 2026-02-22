@@ -1,0 +1,261 @@
+{
+  "tasks": [
+    {
+      "id": "8d7c0264-f898-4074-b6f1-c1219c14fcb2",
+      "name": "mock-data.ts 재작성 - ROADMAP 정확 구조 적용",
+      "description": "lib/mock-data.ts 파일을 ROADMAP.md의 정확한 데이터 구조로 재작성합니다.\n\n필수 작업:\n1. Event 인터페이스 수정: title(name→title), event_date(start_date/end_date→event_date), max_members 추가, invite_code 추가, bank_account(JSONB) 추가, is_closed(is_active→is_closed) 변경\n2. EventMember 인터페이스 수정: status enum (joined→pending, invited→pending, declined→rejected, 추가:approved, withdrawn)\n3. Announcement 인터페이스: is_pinned 필드 추가\n4. 다양한 시나리오 mock 데이터 생성:\n   - 주최자 계정 (user-001)\n   - 참여자 계정 (user-002, user-003)\n   - 모임: 주최한 모임, 참여 중인 모임\n   - EventMember: pending, approved, rejected, withdrawn 상태\n   - Announcement: 일반 공지, 핀 공지(is_pinned: true)\n5. Helper 함수 업데이트: getEventMembers, getEventAnnouncements, getUserEvents, getProfile\n\n완료 기준:\n- Event, EventMember, Announcement 인터페이스가 ROADMAP과 정확히 일치\n- mockEvents, mockEventMembers, mockAnnouncements 데이터 생성\n- 모든 helper 함수 정상 작동",
+      "notes": "ROADMAP.md의 \"Week 2\" 섹션에서 데이터베이스 스키마를 정확히 참고하세요. mock 데이터는 실제 데이터베이스 구조와 일치해야 Stage 3에서 DB 연동이 용이합니다.",
+      "status": "in_progress",
+      "dependencies": [],
+      "createdAt": "2026-02-22T04:53:53.372Z",
+      "updatedAt": "2026-02-22T04:54:01.645Z",
+      "relatedFiles": [
+        {
+          "path": "lib/mock-data.ts",
+          "type": "TO_MODIFY",
+          "description": "ROADMAP 정확 구조로 재작성",
+          "lineStart": 1,
+          "lineEnd": 227
+        }
+      ],
+      "implementationGuide": "1. Event 타입:\n   - id: string\n   - host_id: string\n   - title: string\n   - description?: string\n   - category: 'category1' | 'category2' | ... (ROADMAP 확인)\n   - event_date: string (ISO 형식)\n   - location: string\n   - max_members: number\n   - invite_code: string\n   - bank_account: { bank?: string; account?: string; name?: string } | null\n   - is_closed: boolean\n   - created_at: string\n\n2. EventMember 타입:\n   - id: string\n   - event_id: string\n   - user_id: string\n   - status: 'pending' | 'approved' | 'rejected' | 'withdrawn'\n   - memo?: string\n   - created_at: string\n\n3. Announcement 타입:\n   - id: string\n   - event_id: string\n   - author_id: string\n   - title: string\n   - content: string\n   - is_pinned: boolean\n   - created_at: string\n\n4. Mock 데이터 예시:\n   - 3개 이상의 모임\n   - 각 모임별 3~5명의 멤버 (상태 다양)\n   - 각 모임별 2~3개의 공지 (일부 pinned)\n\n5. 타입스크립트 엄격 모드 준수",
+      "verificationCriteria": "1. Event, EventMember, Announcement 인터페이스가 ROADMAP 스키마와 정확히 일치\n2. mockEvents: 3개 이상, 주최자/참여자 역할 명확\n3. mockEventMembers: pending/approved/rejected/withdrawn 상태 모두 포함\n4. mockAnnouncements: is_pinned 필드로 핀 공지와 일반 공지 구분\n5. Helper 함수들이 새로운 구조에 맞게 정상 작동\n6. TypeScript strict 모드 타입 오류 없음",
+      "analysisResult": "Stage 1: UI/UX 프로토타입 구축 (모킹 데이터) 최종 실행 계획\\\\n\\\\n**전체 목표:**\\\\nROADMAP.md의 정확한 데이터 구조와 UI 요구사항을 준수하여 Stage 1 완료\\\\n\\\\n**10개 Task 구성:**\\\\n1. Mock 데이터 재작성 (ROADMAP 정확 구조)\\\\n2. 폼 검증 스키마 재작성\\\\n3. 컴포넌트 타입 업데이트\\\\n4. 내 이벤트 페이지 (주최/참여 탭)\\\\n5. 모임 생성 페이지 (폼)\\\\n6. 모임 홈 페이지 (탭 네비게이션)\\\\n7. 참여자 관리 페이지 (상태별 필터)\\\\n8. 공지 목록 페이지 (핀 공지)\\\\n9. 공지 작성 페이지 (폼)\\\\n10. 초대 링크 처리 페이지 (미리보기)\\\\n\\\\n**의존성 구조:**\\\\n- Tasks 1-3: 기초 (데이터/스키마/컴포넌트)\\\\n- Tasks 4-10: 페이지 구현 (모두 Tasks 1-3에 의존)\\\\n\\\\n**기술 표준:**\\\\n- React 19 Server/Client Components 혼합\\\\n- react-hook-form + zod 폼 검증\\\\n- Suspense + Skeleton 패턴\\\\n- Tailwind CSS 모바일 반응형 (375px, 768px, 1024px)\\\\n- shadcn/ui 컴포넌트\\\\n- 한국어 주석, 영어 변수명\\\\n\\\\n**완료 기준 (모든 Task 통합):**\\\\n- 모든 페이지 모킹 데이터로 정상 렌더링\\\\n- 폼 유효성 검사 및 오류 메시지 표시\\\\n- 모바일 반응형 (375px 이상) 검증 완료\\\\n- Suspense + Skeleton 패턴 적용\\\\n- npm run lint 오류 0건\\\\n- npm run type-check 타입 오류 0건"
+    },
+    {
+      "id": "babfea97-6136-4734-aa34-08ce419e8225",
+      "name": "schemas.ts 재작성 - ROADMAP 폼 검증 스키마",
+      "description": "lib/schemas.ts 파일을 ROADMAP의 폼 요구사항에 맞춰 재작성합니다.\n\n필수 작업:\n1. EventCreateSchema: title, category, event_date, location, max_members, bank_account(선택)\n2. AnnouncementSchema: title, content, is_pinned\n3. JoinEventSchema: memo(선택)\n4. 각 스키마에 적절한 유효성 검증 규칙 추가\n5. zod.infer를 사용하여 TypeScript 타입 자동 생성\n\n완료 기준:\n- 모든 폼 스키마가 ROADMAP 요구사항 반영\n- 유효성 검증 메시지 한국어로 명확\n- 선택 필드와 필수 필드 구분 명확\n- 타입 자동 생성 정상",
+      "notes": "event_date는 date-fns를 사용하여 형식 검증할 수 있습니다. bank_account 필드는 JSONB 타입이므로 선택 필드로 처리합니다.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "8d7c0264-f898-4074-b6f1-c1219c14fcb2"
+        }
+      ],
+      "createdAt": "2026-02-22T04:53:53.372Z",
+      "updatedAt": "2026-02-22T04:53:53.372Z",
+      "relatedFiles": [
+        {
+          "path": "lib/schemas.ts",
+          "type": "TO_MODIFY",
+          "description": "폼 검증 스키마 완전 재작성",
+          "lineStart": 1,
+          "lineEnd": 73
+        }
+      ],
+      "implementationGuide": "1. EventCreateSchema:\n   - title: 필수, 2~100자\n   - category: enum (ROADMAP의 카테고리 확인)\n   - event_date: 필수, ISO datetime, 현재 이후\n   - location: 필수, 2~200자\n   - max_members: 필수, 정수, 2 이상\n   - bank_account: 선택, { bank?: string, account?: string, name?: string }\n\n2. AnnouncementSchema:\n   - title: 필수, 2~100자\n   - content: 필수, 5~2000자\n   - is_pinned: boolean, 기본값 false\n\n3. JoinEventSchema:\n   - memo: 선택, 0~500자\n\n4. 타입 생성:\n   export type EventCreateInput = z.infer<typeof eventCreateSchema>;\n   export type AnnouncementInput = z.infer<typeof announcementSchema>;\n   export type JoinEventInput = z.infer<typeof joinEventSchema>;",
+      "verificationCriteria": "1. EventCreateSchema, AnnouncementSchema, JoinEventSchema 모두 정의\n2. 각 스키마의 필드가 ROADMAP 폼 요구사항과 일치\n3. 유효성 검증 메시지 명확하고 사용자 친화적\n4. z.infer로 생성된 타입이 정상 작동\n5. TypeScript strict 모드 타입 오류 없음",
+      "analysisResult": "Stage 1: UI/UX 프로토타입 구축 (모킹 데이터) 최종 실행 계획\\\\n\\\\n**전체 목표:**\\\\nROADMAP.md의 정확한 데이터 구조와 UI 요구사항을 준수하여 Stage 1 완료\\\\n\\\\n**10개 Task 구성:**\\\\n1. Mock 데이터 재작성 (ROADMAP 정확 구조)\\\\n2. 폼 검증 스키마 재작성\\\\n3. 컴포넌트 타입 업데이트\\\\n4. 내 이벤트 페이지 (주최/참여 탭)\\\\n5. 모임 생성 페이지 (폼)\\\\n6. 모임 홈 페이지 (탭 네비게이션)\\\\n7. 참여자 관리 페이지 (상태별 필터)\\\\n8. 공지 목록 페이지 (핀 공지)\\\\n9. 공지 작성 페이지 (폼)\\\\n10. 초대 링크 처리 페이지 (미리보기)\\\\n\\\\n**의존성 구조:**\\\\n- Tasks 1-3: 기초 (데이터/스키마/컴포넌트)\\\\n- Tasks 4-10: 페이지 구현 (모두 Tasks 1-3에 의존)\\\\n\\\\n**기술 표준:**\\\\n- React 19 Server/Client Components 혼합\\\\n- react-hook-form + zod 폼 검증\\\\n- Suspense + Skeleton 패턴\\\\n- Tailwind CSS 모바일 반응형 (375px, 768px, 1024px)\\\\n- shadcn/ui 컴포넌트\\\\n- 한국어 주석, 영어 변수명\\\\n\\\\n**완료 기준 (모든 Task 통합):**\\\\n- 모든 페이지 모킹 데이터로 정상 렌더링\\\\n- 폼 유효성 검사 및 오류 메시지 표시\\\\n- 모바일 반응형 (375px 이상) 검증 완료\\\\n- Suspense + Skeleton 패턴 적용\\\\n- npm run lint 오류 0건\\\\n- npm run type-check 타입 오류 0건"
+    },
+    {
+      "id": "52204a78-be9e-40b7-bb3a-9496bebe29d4",
+      "name": "컴포넌트 타입 업데이트 - event-card, member-card, announcement-card",
+      "description": "기존 컴포넌트들의 props 타입을 새로운 mock-data 구조에 맞춰 업데이트합니다.\n\n필수 작업:\n1. components/events/event-card.tsx: Event 타입 업데이트 (start_date→event_date)\n2. components/events/member-card.tsx: EventMember 타입 업데이트 (status enum 값 변경)\n3. components/events/announcement-card.tsx: Announcement 타입 업데이트 (is_pinned 배지 추가)\n4. components/events/status-badge.tsx: status enum 값 업데이트 (pending/approved/rejected/withdrawn)\n5. 각 컴포넌트의 조건부 렌더링 로직 검토 및 수정\n\n완료 기준:\n- 모든 컴포넌트가 새로운 타입 정의로 정상 렌더링\n- status에 따른 배지 색상 올바름\n- is_pinned 배지가 announcement-card에 표시\n- TypeScript 타입 오류 없음",
+      "notes": "각 컴포넌트는 이미 \"use client\"로 선언되어 있으므로 클라이언트 컴포넌트로 유지합니다.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "8d7c0264-f898-4074-b6f1-c1219c14fcb2"
+        }
+      ],
+      "createdAt": "2026-02-22T04:53:53.372Z",
+      "updatedAt": "2026-02-22T04:53:53.372Z",
+      "relatedFiles": [
+        {
+          "path": "components/events/event-card.tsx",
+          "type": "TO_MODIFY",
+          "description": "Event 타입 필드명 업데이트",
+          "lineStart": 1,
+          "lineEnd": 100
+        },
+        {
+          "path": "components/events/member-card.tsx",
+          "type": "TO_MODIFY",
+          "description": "EventMember 상태 표시 업데이트"
+        },
+        {
+          "path": "components/events/announcement-card.tsx",
+          "type": "TO_MODIFY",
+          "description": "is_pinned 배지 추가"
+        },
+        {
+          "path": "components/events/status-badge.tsx",
+          "type": "TO_MODIFY",
+          "description": "상태 enum 값 업데이트"
+        }
+      ],
+      "implementationGuide": "1. event-card.tsx:\n   - Event 타입의 start_date → event_date 변경\n   - max_members 필드 표시 추가 (현재 참여자/최대 인원)\n   - date-fns의 formatDistanceToNow로 상대 시간 표시\n\n2. member-card.tsx:\n   - EventMember 타입의 status 값 변경\n   - pending: 주황색, approved: 초록색, rejected: 빨강색, withdrawn: 회색\n   - memo 필드 표시\n\n3. announcement-card.tsx:\n   - is_pinned: true일 때 핀 아이콘 배지 추가\n   - 스타일로 핀 공지 강조\n\n4. status-badge.tsx:\n   - switch 또는 객체로 상태별 색상 매핑\n   - pending, approved, rejected, withdrawn 모두 처리",
+      "verificationCriteria": "1. 모든 컴포넌트가 새로운 타입으로 정상 렌더링\n2. status 배지 색상이 올바르게 표시\n3. is_pinned 배지가 announcement-card에 표시\n4. TypeScript strict 모드 타입 오류 없음\n5. 컴포넌트 프리뷰에서 mock 데이터 정상 표시",
+      "analysisResult": "Stage 1: UI/UX 프로토타입 구축 (모킹 데이터) 최종 실행 계획\\\\n\\\\n**전체 목표:**\\\\nROADMAP.md의 정확한 데이터 구조와 UI 요구사항을 준수하여 Stage 1 완료\\\\n\\\\n**10개 Task 구성:**\\\\n1. Mock 데이터 재작성 (ROADMAP 정확 구조)\\\\n2. 폼 검증 스키마 재작성\\\\n3. 컴포넌트 타입 업데이트\\\\n4. 내 이벤트 페이지 (주최/참여 탭)\\\\n5. 모임 생성 페이지 (폼)\\\\n6. 모임 홈 페이지 (탭 네비게이션)\\\\n7. 참여자 관리 페이지 (상태별 필터)\\\\n8. 공지 목록 페이지 (핀 공지)\\\\n9. 공지 작성 페이지 (폼)\\\\n10. 초대 링크 처리 페이지 (미리보기)\\\\n\\\\n**의존성 구조:**\\\\n- Tasks 1-3: 기초 (데이터/스키마/컴포넌트)\\\\n- Tasks 4-10: 페이지 구현 (모두 Tasks 1-3에 의존)\\\\n\\\\n**기술 표준:**\\\\n- React 19 Server/Client Components 혼합\\\\n- react-hook-form + zod 폼 검증\\\\n- Suspense + Skeleton 패턴\\\\n- Tailwind CSS 모바일 반응형 (375px, 768px, 1024px)\\\\n- shadcn/ui 컴포넌트\\\\n- 한국어 주석, 영어 변수명\\\\n\\\\n**완료 기준 (모든 Task 통합):**\\\\n- 모든 페이지 모킹 데이터로 정상 렌더링\\\\n- 폼 유효성 검사 및 오류 메시지 표시\\\\n- 모바일 반응형 (375px 이상) 검증 완료\\\\n- Suspense + Skeleton 패턴 적용\\\\n- npm run lint 오류 0건\\\\n- npm run type-check 타입 오류 0건"
+    },
+    {
+      "id": "965cf1d1-7ca6-4492-bac9-f212eb82c317",
+      "name": "내 이벤트 페이지 - 주최/참여 탭 및 모바일 최적화",
+      "description": "app/protected/events/page.tsx를 ROADMAP 요구사항대로 구현합니다.\n\n필수 작업:\n1. 페이지 레이아웃: 헤더 + 탭 네비게이션 + 이벤트 목록\n2. 탭: \"내가 주최한 모임\" / \"참여 중인 모임\" 상태 관리\n3. 각 모임 카드: EventCard 컴포넌트 사용\n4. 빈 상태 메시지 표시\n5. Suspense + Skeleton 패턴 적용\n6. 모바일 반응형 (375px, 768px, 1024px 최적화)\n7. 터치 친화적 UI (버튼 최소 44x44px)\n\n완료 기준:\n- 두 탭이 정상 작동하고 이벤트가 올바르게 분류\n- 모바일 375px 뷰포트에서 정상 렌더링\n- Skeleton 로딩 상태 표시\n- 새 이벤트 생성 버튼 접근 가능\n- npm run lint 오류 없음",
+      "notes": "Stage 1은 모킹 데이터만 사용하므로 Supabase 쿼리는 아직 미실행. Stage 4에서 실제 DB 연동으로 변경 예정.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "52204a78-be9e-40b7-bb3a-9496bebe29d4"
+        }
+      ],
+      "createdAt": "2026-02-22T04:53:53.372Z",
+      "updatedAt": "2026-02-22T04:53:53.372Z",
+      "relatedFiles": [
+        {
+          "path": "app/protected/events/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "주최/참여 탭, Suspense 패턴 적용"
+        }
+      ],
+      "implementationGuide": "1. Server Component 기본 구조:\n   - async function으로 서버 데이터 페칭\n   - mockCurrentUser로 현재 사용자 ID (user-001)\n   - 주최한 모임: mockEventMembers에서 role='organizer'\n   - 참여 중인 모임: mockEventMembers에서 status='approved'\n\n2. Suspense + Skeleton:\n   - EventListSkeleton 컴포넌트 생성\n   - Suspense fallback으로 스켈레톤 표시\n\n3. 탭 네비게이션:\n   - shadcn/ui Tabs 컴포넌트 사용\n   - tabValue 상태로 필터링\n\n4. 모바일 최적화:\n   - grid-cols-1 md:grid-cols-2 lg:grid-cols-3\n   - gap-4 일관된 여백\n   - 터치 버튼 최소 44x44px\n\n5. 빈 상태:\n   - length === 0일 때 \"모임이 없습니다\" 메시지\n   - 새 이벤트 생성 버튼",
+      "verificationCriteria": "1. 탭 전환 시 이벤트 목록 올바르게 변경\n2. 375px 모바일 뷰포트에서 정상 렌더링\n3. Skeleton 로딩 상태 표시됨\n4. EventCard 컴포넌트 정상 표시\n5. 새 이벤트 생성 버튼 클릭 → /protected/events/new 이동\n6. npm run lint 오류 0건",
+      "analysisResult": "Stage 1: UI/UX 프로토타입 구축 (모킹 데이터) 최종 실행 계획\\\\n\\\\n**전체 목표:**\\\\nROADMAP.md의 정확한 데이터 구조와 UI 요구사항을 준수하여 Stage 1 완료\\\\n\\\\n**10개 Task 구성:**\\\\n1. Mock 데이터 재작성 (ROADMAP 정확 구조)\\\\n2. 폼 검증 스키마 재작성\\\\n3. 컴포넌트 타입 업데이트\\\\n4. 내 이벤트 페이지 (주최/참여 탭)\\\\n5. 모임 생성 페이지 (폼)\\\\n6. 모임 홈 페이지 (탭 네비게이션)\\\\n7. 참여자 관리 페이지 (상태별 필터)\\\\n8. 공지 목록 페이지 (핀 공지)\\\\n9. 공지 작성 페이지 (폼)\\\\n10. 초대 링크 처리 페이지 (미리보기)\\\\n\\\\n**의존성 구조:**\\\\n- Tasks 1-3: 기초 (데이터/스키마/컴포넌트)\\\\n- Tasks 4-10: 페이지 구현 (모두 Tasks 1-3에 의존)\\\\n\\\\n**기술 표준:**\\\\n- React 19 Server/Client Components 혼합\\\\n- react-hook-form + zod 폼 검증\\\\n- Suspense + Skeleton 패턴\\\\n- Tailwind CSS 모바일 반응형 (375px, 768px, 1024px)\\\\n- shadcn/ui 컴포넌트\\\\n- 한국어 주석, 영어 변수명\\\\n\\\\n**완료 기준 (모든 Task 통합):**\\\\n- 모든 페이지 모킹 데이터로 정상 렌더링\\\\n- 폼 유효성 검사 및 오류 메시지 표시\\\\n- 모바일 반응형 (375px 이상) 검증 완료\\\\n- Suspense + Skeleton 패턴 적용\\\\n- npm run lint 오류 0건\\\\n- npm run type-check 타입 오류 0건"
+    },
+    {
+      "id": "b4619c3e-4159-4b6f-b1eb-3796b81a2c5b",
+      "name": "모임 생성 페이지 - react-hook-form 폼 구현",
+      "description": "app/protected/events/new/page.tsx를 구현합니다. 폼 유효성 검사 및 제출을 모킹 데이터로 처리합니다.\n\n필수 작업:\n1. EventCreateSchema 기반 폼 필드 구현\n2. react-hook-form + zod 유효성 검사\n3. 필드: title, category, event_date(date+time), location, max_members, bank_account(은행명/계좌번호/예금주)\n4. 폼 제출 → 콘솔 로그 + 성공 메시지 표시\n5. 모바일 최적화된 폼 UI\n6. 로딩 상태 표시\n\n완료 기준:\n- 모든 필드 입력 가능\n- 유효성 검증 오류 메시지 표시\n- 필수 필드 미입력 시 제출 불가\n- 폼 제출 시 콘솔 로그 및 성공 알림\n- 모바일 375px에서 정상 렌더링",
+      "notes": "event_date는 ISO datetime 형식으로 처리. 모바일 date input 호환성 고려.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "babfea97-6136-4734-aa34-08ce419e8225"
+        }
+      ],
+      "createdAt": "2026-02-22T04:53:53.372Z",
+      "updatedAt": "2026-02-22T04:53:53.372Z",
+      "relatedFiles": [
+        {
+          "path": "app/protected/events/new/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "react-hook-form 폼 구현"
+        }
+      ],
+      "implementationGuide": "1. 클라이언트 컴포넌트 구조:\n   \"use client\";\n   useForm(resolver: zodResolver(eventCreateSchema))\n   register, handleSubmit, formState: { errors }\n\n2. 폼 필드:\n   - title: text input\n   - category: select (모임/회의/행사/기타)\n   - event_date: datetime-local input (또는 date + time 분리)\n   - location: text input\n   - max_members: number input (min=2)\n   - bank_account: group (은행/계좌/예금주 - 선택)\n\n3. 제출 핸들러:\n   onSubmit = async (data) => {\n     console.log('Form submitted:', data);\n     // Stage 4에서 Server Action으로 변경\n     showSuccessMessage('모임이 생성되었습니다!');\n   }\n\n4. UI:\n   - shadcn/ui Form, Input, Select, Textarea 컴포넌트\n   - cn() 유틸리티로 조건부 스타일\n   - 에러 메시지 빨간색 텍스트\n   - 제출 버튼: 로딩 상태 표시",
+      "verificationCriteria": "1. 모든 필드가 입력 가능하고 폼 제출됨\n2. 필수 필드 미입력 시 오류 메시지 표시\n3. 유효성 검증 메시지가 명확\n4. 폼 제출 시 콘솔 로그 출력\n5. 모바일 375px에서 정상 렌더링 및 입력 가능\n6. npm run lint 오류 0건",
+      "analysisResult": "Stage 1: UI/UX 프로토타입 구축 (모킹 데이터) 최종 실행 계획\\\\n\\\\n**전체 목표:**\\\\nROADMAP.md의 정확한 데이터 구조와 UI 요구사항을 준수하여 Stage 1 완료\\\\n\\\\n**10개 Task 구성:**\\\\n1. Mock 데이터 재작성 (ROADMAP 정확 구조)\\\\n2. 폼 검증 스키마 재작성\\\\n3. 컴포넌트 타입 업데이트\\\\n4. 내 이벤트 페이지 (주최/참여 탭)\\\\n5. 모임 생성 페이지 (폼)\\\\n6. 모임 홈 페이지 (탭 네비게이션)\\\\n7. 참여자 관리 페이지 (상태별 필터)\\\\n8. 공지 목록 페이지 (핀 공지)\\\\n9. 공지 작성 페이지 (폼)\\\\n10. 초대 링크 처리 페이지 (미리보기)\\\\n\\\\n**의존성 구조:**\\\\n- Tasks 1-3: 기초 (데이터/스키마/컴포넌트)\\\\n- Tasks 4-10: 페이지 구현 (모두 Tasks 1-3에 의존)\\\\n\\\\n**기술 표준:**\\\\n- React 19 Server/Client Components 혼합\\\\n- react-hook-form + zod 폼 검증\\\\n- Suspense + Skeleton 패턴\\\\n- Tailwind CSS 모바일 반응형 (375px, 768px, 1024px)\\\\n- shadcn/ui 컴포넌트\\\\n- 한국어 주석, 영어 변수명\\\\n\\\\n**완료 기준 (모든 Task 통합):**\\\\n- 모든 페이지 모킹 데이터로 정상 렌더링\\\\n- 폼 유효성 검사 및 오류 메시지 표시\\\\n- 모바일 반응형 (375px 이상) 검증 완료\\\\n- Suspense + Skeleton 패턴 적용\\\\n- npm run lint 오류 0건\\\\n- npm run type-check 타입 오류 0건"
+    },
+    {
+      "id": "5ea06612-b045-429b-850e-1751ed3124fe",
+      "name": "모임 홈 페이지 - 탭 네비게이션 및 기본 정보",
+      "description": "app/protected/events/[eventId]/page.tsx를 구현합니다.\n\n필수 작업:\n1. 모임 기본 정보 표시: 제목, 날짜, 장소, 카테고리, 현재 참여자/최대 인원\n2. 초대 링크 복사 버튼 UI (아직 기능 없음)\n3. 마감 여부 배지 표시\n4. 탭 네비게이션: 홈 / 공지 / 참여자 / 카풀 / 정산\n5. 핀 공지 요약 영역 (있으면 표시)\n6. Suspense 패턴\n\n완료 기준:\n- 모임 정보 정상 표시\n- 탭 네비게이션 UI 표시 (기능은 Stage 2)\n- 초대 링크 복사 버튼 표시\n- 마감 상태 배지 표시\n- 모바일 최적화",
+      "notes": "탭 클릭은 아직 URL 변경 없이 UI만 표시. Stage 2에서 라우팅 처리.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "52204a78-be9e-40b7-bb3a-9496bebe29d4"
+        }
+      ],
+      "createdAt": "2026-02-22T04:53:53.372Z",
+      "updatedAt": "2026-02-22T04:53:53.372Z",
+      "relatedFiles": [
+        {
+          "path": "app/protected/events/[eventId]/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "모임 홈 페이지 기본 구조"
+        }
+      ],
+      "implementationGuide": "1. Server Component:\n   - params.eventId로 모임 조회\n   - mockEvents에서 이벤트 찾기\n   - mockEventMembers로 참여자 수 계산\n   - mockAnnouncements에서 핀 공지 찾기 (is_pinned=true)\n\n2. 레이아웃 구조:\n   - Hero 영역: 제목, 날짜, 장소\n   - 정보 카드: 카테고리, 참여자 수, 마감 상태\n   - 초대 링크 복사 버튼\n   - 핀 공지 요약 영역\n   - 탭 네비게이션\n\n3. 탭 구조 (shadcn/ui Tabs):\n   - 홈 (Home)\n   - 공지 (Announcements)\n   - 참여자 (Members)\n   - 카풀 (Carpool)\n   - 정산 (Settlement)\n\n4. 아직 탭 콘텐츠는 플레이스홀더만 표시",
+      "verificationCriteria": "1. 모임 기본 정보 정상 표시\n2. 탭 네비게이션 UI 표시\n3. 초대 링크 복사 버튼 표시\n4. 마감 상태 배지 표시\n5. 핀 공지 요약 표시\n6. 모바일 375px에서 정상 렌더링",
+      "analysisResult": "Stage 1: UI/UX 프로토타입 구축 (모킹 데이터) 최종 실행 계획\\\\n\\\\n**전체 목표:**\\\\nROADMAP.md의 정확한 데이터 구조와 UI 요구사항을 준수하여 Stage 1 완료\\\\n\\\\n**10개 Task 구성:**\\\\n1. Mock 데이터 재작성 (ROADMAP 정확 구조)\\\\n2. 폼 검증 스키마 재작성\\\\n3. 컴포넌트 타입 업데이트\\\\n4. 내 이벤트 페이지 (주최/참여 탭)\\\\n5. 모임 생성 페이지 (폼)\\\\n6. 모임 홈 페이지 (탭 네비게이션)\\\\n7. 참여자 관리 페이지 (상태별 필터)\\\\n8. 공지 목록 페이지 (핀 공지)\\\\n9. 공지 작성 페이지 (폼)\\\\n10. 초대 링크 처리 페이지 (미리보기)\\\\n\\\\n**의존성 구조:**\\\\n- Tasks 1-3: 기초 (데이터/스키마/컴포넌트)\\\\n- Tasks 4-10: 페이지 구현 (모두 Tasks 1-3에 의존)\\\\n\\\\n**기술 표준:**\\\\n- React 19 Server/Client Components 혼합\\\\n- react-hook-form + zod 폼 검증\\\\n- Suspense + Skeleton 패턴\\\\n- Tailwind CSS 모바일 반응형 (375px, 768px, 1024px)\\\\n- shadcn/ui 컴포넌트\\\\n- 한국어 주석, 영어 변수명\\\\n\\\\n**완료 기준 (모든 Task 통합):**\\\\n- 모든 페이지 모킹 데이터로 정상 렌더링\\\\n- 폼 유효성 검사 및 오류 메시지 표시\\\\n- 모바일 반응형 (375px 이상) 검증 완료\\\\n- Suspense + Skeleton 패턴 적용\\\\n- npm run lint 오류 0건\\\\n- npm run type-check 타입 오류 0건"
+    },
+    {
+      "id": "50ba20d5-3f2e-4140-8086-9f64d063caee",
+      "name": "참여자 관리 페이지 - 상태별 필터 탭",
+      "description": "app/protected/events/[eventId]/members/page.tsx를 구현합니다.\n\n필수 작업:\n1. 상태별 탭: 전체 / 대기(pending) / 승인(approved) / 거절(rejected)\n2. 각 참여자 카드: MemberCard 컴포넌트 사용\n3. 각 카드에 승인/거절/탈퇴 버튼 (UI만, 아직 기능 없음)\n4. 참여자 정보: 이름, 신청일시, 메모, 상태 배지\n5. 빈 상태 메시지\n6. 모바일 최적화\n\n완료 기준:\n- 탭 전환 시 참여자 목록 필터링\n- MemberCard 정상 렌더링\n- 상태별 배지 색상 구분\n- 버튼 터치 영역 최소 44x44px\n- 모바일 375px 정상 렌더링",
+      "notes": "button 클릭은 아직 콘솔 로그만 출력. Stage 4에서 Server Action으로 변경.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "52204a78-be9e-40b7-bb3a-9496bebe29d4"
+        }
+      ],
+      "createdAt": "2026-02-22T04:53:53.372Z",
+      "updatedAt": "2026-02-22T04:53:53.372Z",
+      "relatedFiles": [
+        {
+          "path": "app/protected/events/[eventId]/members/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "참여자 관리 페이지 탭 필터"
+        }
+      ],
+      "implementationGuide": "1. Server Component:\n   - params.eventId로 모임 조회\n   - mockEventMembers에서 참여자 목록 조회\n   - 상태별로 필터링할 데이터 준비\n\n2. 클라이언트 부분:\n   - useState로 selectedStatus 관리\n   - 탭 클릭 시 필터링\n   - 각 상태별 참여자 목록 표시\n\n3. 탭 구조:\n   - \"전체\" (status=all)\n   - \"대기\" (status=pending)\n   - \"승인\" (status=approved)\n   - \"거절\" (status=rejected)\n\n4. MemberCard:\n   - 이름, 메모, 신청 일시\n   - 상태 배지\n   - 승인/거절/탈퇴 버튼",
+      "verificationCriteria": "1. 상태별 탭 전환 시 목록 필터링\n2. MemberCard 정상 렌더링\n3. 상태 배지 색상 올바름\n4. 버튼 터치 영역 충분\n5. 빈 상태 메시지 표시\n6. 모바일 375px 정상 렌더링",
+      "analysisResult": "Stage 1: UI/UX 프로토타입 구축 (모킹 데이터) 최종 실행 계획\\\\n\\\\n**전체 목표:**\\\\nROADMAP.md의 정확한 데이터 구조와 UI 요구사항을 준수하여 Stage 1 완료\\\\n\\\\n**10개 Task 구성:**\\\\n1. Mock 데이터 재작성 (ROADMAP 정확 구조)\\\\n2. 폼 검증 스키마 재작성\\\\n3. 컴포넌트 타입 업데이트\\\\n4. 내 이벤트 페이지 (주최/참여 탭)\\\\n5. 모임 생성 페이지 (폼)\\\\n6. 모임 홈 페이지 (탭 네비게이션)\\\\n7. 참여자 관리 페이지 (상태별 필터)\\\\n8. 공지 목록 페이지 (핀 공지)\\\\n9. 공지 작성 페이지 (폼)\\\\n10. 초대 링크 처리 페이지 (미리보기)\\\\n\\\\n**의존성 구조:**\\\\n- Tasks 1-3: 기초 (데이터/스키마/컴포넌트)\\\\n- Tasks 4-10: 페이지 구현 (모두 Tasks 1-3에 의존)\\\\n\\\\n**기술 표준:**\\\\n- React 19 Server/Client Components 혼합\\\\n- react-hook-form + zod 폼 검증\\\\n- Suspense + Skeleton 패턴\\\\n- Tailwind CSS 모바일 반응형 (375px, 768px, 1024px)\\\\n- shadcn/ui 컴포넌트\\\\n- 한국어 주석, 영어 변수명\\\\n\\\\n**완료 기준 (모든 Task 통합):**\\\\n- 모든 페이지 모킹 데이터로 정상 렌더링\\\\n- 폼 유효성 검사 및 오류 메시지 표시\\\\n- 모바일 반응형 (375px 이상) 검증 완료\\\\n- Suspense + Skeleton 패턴 적용\\\\n- npm run lint 오류 0건\\\\n- npm run type-check 타입 오류 0건"
+    },
+    {
+      "id": "37266e7b-fd96-4c07-999c-99eb49c1911d",
+      "name": "공지 목록 페이지 - 핀 공지 상단 고정",
+      "description": "app/protected/events/[eventId]/announcements/page.tsx를 구현합니다.\n\n필수 작업:\n1. 공지 목록 표시 (AnnouncementCard 컴포넌트)\n2. 핀 공지(is_pinned=true) 상단에 고정\n3. 상대 시간 표시 (date-fns: formatDistanceToNow)\n4. 각 공지: 제목, 내용 미리보기, 작성자, 날짜\n5. 빈 상태 메시지\n6. 모바일 최적화\n7. Suspense 패턴\n\n완료 기준:\n- 핀 공지가 상단에 고정 표시\n- 상대 시간이 정상 표시\n- AnnouncementCard 정상 렌더링\n- 모바일 375px 정상 렌더링",
+      "notes": "date-fns의 formatDistanceToNow에 locale: ko 옵션으로 한국어 상대 시간 표시.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "52204a78-be9e-40b7-bb3a-9496bebe29d4"
+        }
+      ],
+      "createdAt": "2026-02-22T04:53:53.372Z",
+      "updatedAt": "2026-02-22T04:53:53.372Z",
+      "relatedFiles": [
+        {
+          "path": "app/protected/events/[eventId]/announcements/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "공지 목록 페이지 핀 고정"
+        }
+      ],
+      "implementationGuide": "1. Server Component:\n   - params.eventId로 모임 조회\n   - mockAnnouncements에서 공지 조회\n   - is_pinned: true인 것부터 정렬\n\n2. 정렬 로직:\n   const pinned = announcements.filter(a => a.is_pinned);\n   const unpinned = announcements.filter(a => !a.is_pinned);\n   const sorted = [...pinned, ...unpinned];\n\n3. AnnouncementCard:\n   - 제목, 내용 요약 (200자 이내)\n   - 핀 아이콘 배지 (pinned인 경우)\n   - 작성자 이름 (mockProfiles에서 조회)\n   - 상대 시간 (formatDistanceToNow)\n\n4. UI:\n   - 각 공지를 카드로 표시\n   - 빈 상태: \"공지가 없습니다\" 메시지\n   - 새 공지 작성 버튼 링크",
+      "verificationCriteria": "1. 핀 공지가 상단에 고정\n2. AnnouncementCard 정상 렌더링\n3. 상대 시간 한국어로 표시\n4. 빈 상태 메시지 표시\n5. 모바일 375px 정상 렌더링",
+      "analysisResult": "Stage 1: UI/UX 프로토타입 구축 (모킹 데이터) 최종 실행 계획\\\\n\\\\n**전체 목표:**\\\\nROADMAP.md의 정확한 데이터 구조와 UI 요구사항을 준수하여 Stage 1 완료\\\\n\\\\n**10개 Task 구성:**\\\\n1. Mock 데이터 재작성 (ROADMAP 정확 구조)\\\\n2. 폼 검증 스키마 재작성\\\\n3. 컴포넌트 타입 업데이트\\\\n4. 내 이벤트 페이지 (주최/참여 탭)\\\\n5. 모임 생성 페이지 (폼)\\\\n6. 모임 홈 페이지 (탭 네비게이션)\\\\n7. 참여자 관리 페이지 (상태별 필터)\\\\n8. 공지 목록 페이지 (핀 공지)\\\\n9. 공지 작성 페이지 (폼)\\\\n10. 초대 링크 처리 페이지 (미리보기)\\\\n\\\\n**의존성 구조:**\\\\n- Tasks 1-3: 기초 (데이터/스키마/컴포넌트)\\\\n- Tasks 4-10: 페이지 구현 (모두 Tasks 1-3에 의존)\\\\n\\\\n**기술 표준:**\\\\n- React 19 Server/Client Components 혼합\\\\n- react-hook-form + zod 폼 검증\\\\n- Suspense + Skeleton 패턴\\\\n- Tailwind CSS 모바일 반응형 (375px, 768px, 1024px)\\\\n- shadcn/ui 컴포넌트\\\\n- 한국어 주석, 영어 변수명\\\\n\\\\n**완료 기준 (모든 Task 통합):**\\\\n- 모든 페이지 모킹 데이터로 정상 렌더링\\\\n- 폼 유효성 검사 및 오류 메시지 표시\\\\n- 모바일 반응형 (375px 이상) 검증 완료\\\\n- Suspense + Skeleton 패턴 적용\\\\n- npm run lint 오류 0건\\\\n- npm run type-check 타입 오류 0건"
+    },
+    {
+      "id": "acde487b-c663-4ace-a3b7-df189aefbe54",
+      "name": "공지 작성 페이지 - 폼 구현",
+      "description": "app/protected/events/[eventId]/announcements/new/page.tsx를 구현합니다.\n\n필수 작업:\n1. AnnouncementSchema 기반 폼 필드\n2. react-hook-form + zod 유효성 검사\n3. 필드: 제목, 내용(textarea), 핀 고정 여부(checkbox)\n4. 폼 제출 → 콘솔 로그 + 성공 메시지\n5. 모바일 최적화\n\n완료 기준:\n- 모든 필드 입력 가능\n- 유효성 검증 메시지 표시\n- 폼 제출 시 콘솔 로그\n- 모바일 375px 정상 렌더링",
+      "notes": "Stage 4에서 Server Action으로 변경할 예정.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "babfea97-6136-4734-aa34-08ce419e8225"
+        }
+      ],
+      "createdAt": "2026-02-22T04:53:53.372Z",
+      "updatedAt": "2026-02-22T04:53:53.372Z",
+      "relatedFiles": [
+        {
+          "path": "app/protected/events/[eventId]/announcements/new/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "공지 작성 폼"
+        }
+      ],
+      "implementationGuide": "1. 클라이언트 컴포넌트:\n   \"use client\";\n   useForm(resolver: zodResolver(announcementSchema))\n\n2. 폼 필드:\n   - title: text input (2~100자)\n   - content: textarea (5~2000자)\n   - is_pinned: checkbox\n\n3. 제출 핸들러:\n   onSubmit = async (data) => {\n     console.log('Announcement submitted:', data);\n     showSuccessMessage('공지가 작성되었습니다!');\n   }\n\n4. UI:\n   - shadcn/ui Form, Input, Textarea, Checkbox\n   - 필드별 에러 메시지\n   - 제출 버튼",
+      "verificationCriteria": "1. 모든 필드 입력 가능\n2. 유효성 검증 메시지 표시\n3. 폼 제출 시 콘솔 로그\n4. 모바일 375px 정상 렌더링\n5. npm run lint 오류 0건",
+      "analysisResult": "Stage 1: UI/UX 프로토타입 구축 (모킹 데이터) 최종 실행 계획\\\\n\\\\n**전체 목표:**\\\\nROADMAP.md의 정확한 데이터 구조와 UI 요구사항을 준수하여 Stage 1 완료\\\\n\\\\n**10개 Task 구성:**\\\\n1. Mock 데이터 재작성 (ROADMAP 정확 구조)\\\\n2. 폼 검증 스키마 재작성\\\\n3. 컴포넌트 타입 업데이트\\\\n4. 내 이벤트 페이지 (주최/참여 탭)\\\\n5. 모임 생성 페이지 (폼)\\\\n6. 모임 홈 페이지 (탭 네비게이션)\\\\n7. 참여자 관리 페이지 (상태별 필터)\\\\n8. 공지 목록 페이지 (핀 공지)\\\\n9. 공지 작성 페이지 (폼)\\\\n10. 초대 링크 처리 페이지 (미리보기)\\\\n\\\\n**의존성 구조:**\\\\n- Tasks 1-3: 기초 (데이터/스키마/컴포넌트)\\\\n- Tasks 4-10: 페이지 구현 (모두 Tasks 1-3에 의존)\\\\n\\\\n**기술 표준:**\\\\n- React 19 Server/Client Components 혼합\\\\n- react-hook-form + zod 폼 검증\\\\n- Suspense + Skeleton 패턴\\\\n- Tailwind CSS 모바일 반응형 (375px, 768px, 1024px)\\\\n- shadcn/ui 컴포넌트\\\\n- 한국어 주석, 영어 변수명\\\\n\\\\n**완료 기준 (모든 Task 통합):**\\\\n- 모든 페이지 모킹 데이터로 정상 렌더링\\\\n- 폼 유효성 검사 및 오류 메시지 표시\\\\n- 모바일 반응형 (375px 이상) 검증 완료\\\\n- Suspense + Skeleton 패턴 적용\\\\n- npm run lint 오류 0건\\\\n- npm run type-check 타입 오류 0건"
+    },
+    {
+      "id": "b89eee62-7513-4ae1-9840-be72f6270330",
+      "name": "초대 링크 처리 페이지 - 비인증 상태 미리보기",
+      "description": "app/join/[inviteCode]/page.tsx를 구현합니다.\n\n필수 작업:\n1. 비인증 사용자: 모임 정보 미리보기 (제목, 날짜, 장소, 참여자 수)\n2. \"참여 신청하기\" 버튼 → /auth/login?redirect=/join/[inviteCode] 이동 (아직 기능 없음)\n3. 모임이 마감된 경우: \"마감된 모임입니다\" 메시지\n4. 존재하지 않는 초대코드: not-found.tsx 처리\n5. 모바일 최적화\n\n완료 기준:\n- 모임 정보 미리보기 정상 표시\n- \"참여 신청하기\" 버튼 표시\n- 마감 상태 확인\n- 모바일 375px 정상 렌더링",
+      "notes": "Stage 4에서 인증 사용자 자동 참여 신청 처리 추가. 지금은 로그인 리다이렉트만.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "52204a78-be9e-40b7-bb3a-9496bebe29d4"
+        }
+      ],
+      "createdAt": "2026-02-22T04:53:53.372Z",
+      "updatedAt": "2026-02-22T04:53:53.372Z",
+      "relatedFiles": [
+        {
+          "path": "app/join/[inviteCode]/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "초대 링크 미리보기 페이지"
+        }
+      ],
+      "implementationGuide": "1. Server Component:\n   - params.inviteCode로 모임 조회\n   - mockEvents에서 invite_code 매칭\n   - is_closed 확인\n   - 존재하지 않으면 notFound() 호출\n\n2. 미리보기 정보:\n   - 제목, 설명\n   - 날짜, 장소\n   - 현재 참여자/최대 인원\n   - 카테고리 배지\n   - 마감 여부 배지\n\n3. \"참여 신청하기\" 버튼:\n   - href: `/auth/login?redirect=/join/${inviteCode}`\n   - 마감되면 disabled\n\n4. 빈 상태:\n   - \"모임을 찾을 수 없습니다\" (존재하지 않는 코드)\n   - 홈으로 돌아가기 링크",
+      "verificationCriteria": "1. 모임 정보 미리보기 정상 표시\n2. \"참여 신청하기\" 버튼 표시 및 클릭 가능\n3. 마감 상태 배지 표시\n4. 존재하지 않는 코드 처리\n5. 모바일 375px 정상 렌더링",
+      "analysisResult": "Stage 1: UI/UX 프로토타입 구축 (모킹 데이터) 최종 실행 계획\\\\n\\\\n**전체 목표:**\\\\nROADMAP.md의 정확한 데이터 구조와 UI 요구사항을 준수하여 Stage 1 완료\\\\n\\\\n**10개 Task 구성:**\\\\n1. Mock 데이터 재작성 (ROADMAP 정확 구조)\\\\n2. 폼 검증 스키마 재작성\\\\n3. 컴포넌트 타입 업데이트\\\\n4. 내 이벤트 페이지 (주최/참여 탭)\\\\n5. 모임 생성 페이지 (폼)\\\\n6. 모임 홈 페이지 (탭 네비게이션)\\\\n7. 참여자 관리 페이지 (상태별 필터)\\\\n8. 공지 목록 페이지 (핀 공지)\\\\n9. 공지 작성 페이지 (폼)\\\\n10. 초대 링크 처리 페이지 (미리보기)\\\\n\\\\n**의존성 구조:**\\\\n- Tasks 1-3: 기초 (데이터/스키마/컴포넌트)\\\\n- Tasks 4-10: 페이지 구현 (모두 Tasks 1-3에 의존)\\\\n\\\\n**기술 표준:**\\\\n- React 19 Server/Client Components 혼합\\\\n- react-hook-form + zod 폼 검증\\\\n- Suspense + Skeleton 패턴\\\\n- Tailwind CSS 모바일 반응형 (375px, 768px, 1024px)\\\\n- shadcn/ui 컴포넌트\\\\n- 한국어 주석, 영어 변수명\\\\n\\\\n**완료 기준 (모든 Task 통합):**\\\\n- 모든 페이지 모킹 데이터로 정상 렌더링\\\\n- 폼 유효성 검사 및 오류 메시지 표시\\\\n- 모바일 반응형 (375px 이상) 검증 완료\\\\n- Suspense + Skeleton 패턴 적용\\\\n- npm run lint 오류 0건\\\\n- npm run type-check 타입 오류 0건"
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
+
+import { MemberCard } from "@/components/events/member-card";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { getEventMembers } from "@/lib/mock-data";
+import type { EventMember } from "@/lib/mock-data";
+
+interface MembersPageProps {
+  params: {
+    eventId: string;
+  };
+}
+
+export default function MembersPage({ params }: MembersPageProps) {
+  const { eventId } = params;
+  const members = getEventMembers(eventId);
+
+  const pendingMembers = members.filter((m) => m.status === "pending");
+  const approvedMembers = members.filter((m) => m.status === "approved");
+  const rejectedMembers = members.filter((m) => m.status === "rejected");
+  const allMembers = members;
+
+  const renderMemberList = (memberList: EventMember[]) => {
+    if (memberList.length === 0) {
+      return (
+        <Card>
+          <CardContent className="pt-6">
+            <p className="text-center text-sm text-muted-foreground">
+              해당하는 참여자가 없습니다
+            </p>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    return (
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {memberList.map((member) => (
+          <MemberCard
+            key={member.id}
+            member={member}
+            isOrganizerView={true}
+            onApprove={(memberId) => console.log(`승인: ${memberId}`)}
+            onReject={(memberId) => console.log(`거절: ${memberId}`)}
+            onRemove={(memberId) => console.log(`제거: ${memberId}`)}
+          />
+        ))}
+      </div>
+    );
+  };
+
+  return (
+    <div className="flex w-full flex-1 flex-col gap-8">
+      <Link href={`/protected/events/${eventId}`}>
+        <Button variant="ghost" size="sm">
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          모임으로 돌아가기
+        </Button>
+      </Link>
+
+      <div>
+        <h1 className="text-3xl font-bold">참여자 관리</h1>
+        <p className="mt-2 text-muted-foreground">
+          모임의 참여자를 상태별로 관리할 수 있습니다
+        </p>
+      </div>
+
+      <Tabs defaultValue="all" className="w-full">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="all">전체 ({allMembers.length})</TabsTrigger>
+          <TabsTrigger value="pending">
+            대기 ({pendingMembers.length})
+          </TabsTrigger>
+          <TabsTrigger value="approved">
+            승인 ({approvedMembers.length})
+          </TabsTrigger>
+          <TabsTrigger value="rejected">
+            거절 ({rejectedMembers.length})
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="all" className="space-y-4">
+          {renderMemberList(allMembers)}
+        </TabsContent>
+
+        <TabsContent value="pending" className="space-y-4">
+          {renderMemberList(pendingMembers)}
+        </TabsContent>
+
+        <TabsContent value="approved" className="space-y-4">
+          {renderMemberList(approvedMembers)}
+        </TabsContent>
+
+        <TabsContent value="rejected" className="space-y-4">
+          {renderMemberList(rejectedMembers)}
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
