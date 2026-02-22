@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,9 +20,13 @@ interface JoinPageProps {
   }>;
 }
 
-export default async function JoinPage({ params }: JoinPageProps) {
-  const { inviteCode } = await params;
-
+// 데이터 페칭을 처리하는 async 컴포넌트
+async function JoinPageContent({
+  paramsPromise,
+}: {
+  paramsPromise: Promise<{ inviteCode: string }>;
+}) {
+  const { inviteCode } = await paramsPromise;
   const event = getEventByInviteCode(inviteCode);
 
   if (!event) {
@@ -124,5 +129,42 @@ export default async function JoinPage({ params }: JoinPageProps) {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+// Loading fallback 컴포넌트
+function JoinPageSkeleton() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-muted/50 p-4">
+      <Card className="w-full max-w-2xl">
+        <CardHeader>
+          <div className="space-y-3">
+            <div className="h-8 w-2/3 rounded-md bg-muted" />
+            <div className="h-4 w-1/3 rounded-md bg-muted" />
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="space-y-4">
+            <div className="h-4 w-full rounded-md bg-muted" />
+            <div className="grid gap-4 md:grid-cols-2">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="space-y-2 rounded-lg bg-muted p-4">
+                  <div className="h-3 w-20 rounded bg-muted-foreground/20" />
+                  <div className="h-4 rounded bg-muted-foreground/20" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+export default function JoinPage({ params }: JoinPageProps) {
+  return (
+    <Suspense fallback={<JoinPageSkeleton />}>
+      <JoinPageContent paramsPromise={params} />
+    </Suspense>
   );
 }

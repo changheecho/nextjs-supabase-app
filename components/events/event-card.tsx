@@ -90,7 +90,7 @@ export function EventCard({
             </div>
           </div>
 
-          <Button variant="ghost" size="sm" className="w-full justify-between">
+          <Button variant="ghost" size="lg" className="w-full justify-between">
             <span>상세 보기</span>
             <ArrowRight className="h-4 w-4" />
           </Button>

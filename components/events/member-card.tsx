@@ -108,7 +108,7 @@ export function MemberCard({
         <CardContent className="flex gap-2">
           <Button
             variant="default"
-            size="sm"
+            size="lg"
             className="flex-1"
             disabled={isLoading}
             onClick={handleApprove}
@@ -117,7 +117,7 @@ export function MemberCard({
           </Button>
           <Button
             variant="outline"
-            size="sm"
+            size="lg"
             className="flex-1"
             disabled={isLoading}
             onClick={handleReject}
@@ -131,7 +131,7 @@ export function MemberCard({
         <CardContent>
           <Button
             variant="outline"
-            size="sm"
+            size="lg"
             className="w-full text-red-600 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950"
             disabled={isLoading}
             onClick={handleRemove}

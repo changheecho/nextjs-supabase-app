@@ -69,7 +69,7 @@ export default async function MembersPage({ params }: MembersPageProps) {
       </div>
 
       <Tabs defaultValue="all" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4">
           <TabsTrigger value="all">전체 ({allMembers.length})</TabsTrigger>
           <TabsTrigger value="pending">
             대기 ({pendingMembers.length})

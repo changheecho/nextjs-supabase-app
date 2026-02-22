@@ -29,7 +29,7 @@ async function EventListServer() {
 
   // 탭 상태에 따른 필터링 (클라이언트에서 처리하므로 여기서는 모든 데이터 전달)
   return (
-    <div className="space-y-8">
+    <div className="space-y-4 md:space-y-6 lg:space-y-8">
       {/* 주최한 모임 섹션 */}
       <section>
         <h2 className="mb-4 text-xl font-semibold">내가 주최한 모임</h2>
@@ -46,7 +46,7 @@ async function EventListServer() {
             </Link>
           </div>
         ) : (
-          <div className="grid w-full grid-cols-1 gap-4">
+          <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {hostedEvents.map((event) => {
               const memberCount = getApprovedMemberCount(event.id);
               return (
@@ -72,7 +72,7 @@ async function EventListServer() {
             </p>
           </div>
         ) : (
-          <div className="grid w-full grid-cols-1 gap-4">
+          <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {approvedEvents.map((event) => {
               const memberCount = getApprovedMemberCount(event.id);
               return (
