@@ -23,13 +23,18 @@ export default async function MembersPage({ params }: MembersPageProps) {
   const rejectedMembers = members.filter((m) => m.status === "rejected");
   const allMembers = members;
 
-  const renderMemberList = (memberList: EventMember[]) => {
+  const renderMemberList = (memberList: EventMember[], status?: string) => {
     if (memberList.length === 0) {
+      let emptyMessage = "해당하는 참여자가 없습니다";
+      if (status === "pending") emptyMessage = "대기 중인 신청이 없습니다";
+      if (status === "approved") emptyMessage = "승인된 참여자가 없습니다";
+      if (status === "rejected") emptyMessage = "거절된 신청이 없습니다";
+
       return (
         <Card>
           <CardContent className="pt-6">
             <p className="text-center text-sm text-muted-foreground">
-              해당하는 참여자가 없습니다
+              {emptyMessage}
             </p>
           </CardContent>
         </Card>
@@ -83,19 +88,19 @@ export default async function MembersPage({ params }: MembersPageProps) {
         </TabsList>
 
         <TabsContent value="all" className="space-y-4">
-          {renderMemberList(allMembers)}
+          {renderMemberList(allMembers, "all")}
         </TabsContent>
 
         <TabsContent value="pending" className="space-y-4">
-          {renderMemberList(pendingMembers)}
+          {renderMemberList(pendingMembers, "pending")}
         </TabsContent>
 
         <TabsContent value="approved" className="space-y-4">
-          {renderMemberList(approvedMembers)}
+          {renderMemberList(approvedMembers, "approved")}
         </TabsContent>
 
         <TabsContent value="rejected" className="space-y-4">
-          {renderMemberList(rejectedMembers)}
+          {renderMemberList(rejectedMembers, "rejected")}
         </TabsContent>
       </Tabs>
     </div>

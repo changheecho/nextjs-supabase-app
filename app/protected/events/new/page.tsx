@@ -76,7 +76,10 @@ export default function CreateEventPage() {
               name="title"
               render={({ field }: any) => (
                 <FormItem>
-                  <FormLabel>모임 제목 *</FormLabel>
+                  <FormLabel>
+                    모임 제목{" "}
+                    <span className="ml-1 text-xs text-red-600">(필수)</span>
+                  </FormLabel>
                   <FormControl>
                     <Input placeholder="예: 2월 정기 모임" {...field} />
                   </FormControl>
@@ -92,7 +95,10 @@ export default function CreateEventPage() {
               name="category"
               render={({ field }: any) => (
                 <FormItem>
-                  <FormLabel>카테고리 *</FormLabel>
+                  <FormLabel>
+                    카테고리{" "}
+                    <span className="ml-1 text-xs text-red-600">(필수)</span>
+                  </FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
@@ -122,7 +128,10 @@ export default function CreateEventPage() {
               name="event_date"
               render={({ field }: any) => (
                 <FormItem>
-                  <FormLabel>날짜 및 시간 *</FormLabel>
+                  <FormLabel>
+                    날짜 및 시간{" "}
+                    <span className="ml-1 text-xs text-red-600">(필수)</span>
+                  </FormLabel>
                   <FormControl>
                     <Input type="datetime-local" {...field} />
                   </FormControl>
@@ -140,7 +149,10 @@ export default function CreateEventPage() {
               name="location"
               render={({ field }: any) => (
                 <FormItem>
-                  <FormLabel>장소 *</FormLabel>
+                  <FormLabel>
+                    장소{" "}
+                    <span className="ml-1 text-xs text-red-600">(필수)</span>
+                  </FormLabel>
                   <FormControl>
                     <Input placeholder="예: 강남역 카페" {...field} />
                   </FormControl>
@@ -158,7 +170,10 @@ export default function CreateEventPage() {
               name="max_members"
               render={({ field }: any) => (
                 <FormItem>
-                  <FormLabel>최대 인원 *</FormLabel>
+                  <FormLabel>
+                    최대 인원{" "}
+                    <span className="ml-1 text-xs text-red-600">(필수)</span>
+                  </FormLabel>
                   <FormControl>
                     <Input
                       type="number"

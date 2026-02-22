@@ -28,7 +28,7 @@ export function CopyInviteLinkButton({
   };
 
   return (
-    <Button variant="outline" size="sm" className="w-full" onClick={handleCopy}>
+    <Button variant="outline" size="lg" className="w-full" onClick={handleCopy}>
       <Copy className="mr-2 h-4 w-4" />
       {copied ? "복사됨!" : "초대 링크 복사"}
     </Button>
