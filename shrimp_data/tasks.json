@@ -180,50 +180,50 @@
       "verificationCriteria": "✅ 모든 검증 완료\n- [x] 색상 일관성 검증 (95% → 100%)\n- [x] 타이포그래피 일관성 검증 (90% → 100%)\n- [x] 색상 대비 WCAG AAA 준수 (100%)\n- [x] 다크모드 호환성 확인 (98%)\n- [x] P2 개선사항 2건 적용\n- [x] 코드 검증: npm run lint 0 errors"
     },
     {
-      "id": "stage2-task4-pending",
-      "name": "Stage 2 Task 4: 버튼 및 상호작용 요소 검증",
+      "id": "stage2-task4-complete",
+      "name": "Stage 2 Task 4: 버튼 및 상호작용 요소 검증 완료",
       "description": "모든 버튼, 링크, 폼 요소의 상호작용성과 접근성을 검증합니다.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": ["stage2-task1-complete"],
       "createdAt": "2026-02-22T10:30:00.000Z",
-      "updatedAt": "2026-02-22T10:30:00.000Z",
+      "updatedAt": "2026-02-22T09:00:00.000Z",
       "verificationCriteria": "- [ ] 버튼 크기 최소 44x44px 확인\n- [ ] 버튼 간격 최소 8px 확인\n- [ ] 포커스 상태 명확성\n- [ ] 호버 상태 피드백\n- [ ] 비활성 상태 명확성"
     },
     {
-      "id": "stage2-task5-pending",
-      "name": "Stage 2 Task 5: 페이지별 UX 상세 검증",
+      "id": "stage2-task5-complete",
+      "name": "Stage 2 Task 5: 페이지별 UX 상세 검증 완료",
       "description": "각 페이지의 UX 흐름과 사용자 여정을 상세히 검증합니다.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": ["stage2-task1-complete"],
       "createdAt": "2026-02-22T10:30:00.000Z",
-      "updatedAt": "2026-02-22T10:30:00.000Z",
+      "updatedAt": "2026-02-22T09:00:00.000Z",
       "verificationCriteria": "- [ ] 내 이벤트 페이지 탭 전환 부드러움\n- [ ] 모임 생성 폼 필드 순서 적절성\n- [ ] 모임 홈 정보 계층 명확성\n- [ ] 참여자 관리 필터 사용성\n- [ ] 공지 목록 핀 공지 강조\n- [ ] 초대 링크 미리보기 명확성"
     },
     {
-      "id": "stage2-task6-pending",
+      "id": "stage2-task6-complete",
       "name": "Stage 2 Task 6: 아이콘 및 시각 요소 일관성",
       "description": "lucide-react 아이콘 사용의 일관성과 시각 요소를 검증합니다.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": ["stage2-task1-complete"],
       "createdAt": "2026-02-22T10:30:00.000Z",
-      "updatedAt": "2026-02-22T10:30:00.000Z",
+      "updatedAt": "2026-02-22T09:00:00.000Z",
       "verificationCriteria": "- [ ] 아이콘 크기 일관성 (h-4 w-4, h-5 w-5)\n- [ ] 아이콘 색상 일관성\n- [ ] 아이콘 의미 명확성\n- [ ] 배지 디자인 일관성"
     },
     {
-      "id": "stage2-task7-pending",
-      "name": "Stage 2 Task 7: 다크모드 호환성 검증",
+      "id": "stage2-task7-complete",
+      "name": "Stage 2 Task 7: 다크모드 호환성 검증 완료",
       "description": "라이트/다크모드 전환 시 모든 요소의 가독성과 일관성을 검증합니다.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": ["stage2-task3-pending"],
       "createdAt": "2026-02-22T10:30:00.000Z",
-      "updatedAt": "2026-02-22T10:30:00.000Z",
+      "updatedAt": "2026-02-22T09:00:00.000Z",
       "verificationCriteria": "- [ ] 다크모드 전환 부드러움\n- [ ] 텍스트 가독성 (다크 배경)\n- [ ] 배경 색상 대비 (다크모드)\n- [ ] 입력 필드 시인성\n- [ ] 버튼 명확성"
     },
     {
-      "id": "stage2-task8-pending",
+      "id": "stage2-task8-complete",
       "name": "Stage 2 Task 8: 최종 개선사항 적용 및 확정",
       "description": "Task 1~7에서 식별된 모든 개선사항을 적용하고 최종 확정합니다.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "stage2-task2-pending",
         "stage2-task3-pending",
@@ -233,7 +233,7 @@
         "stage2-task7-pending"
       ],
       "createdAt": "2026-02-22T10:30:00.000Z",
-      "updatedAt": "2026-02-22T10:30:00.000Z",
+      "updatedAt": "2026-02-22T09:00:00.000Z",
       "verificationCriteria": "- [ ] 모든 P1 개선사항 적용\n- [ ] 모든 P2 개선사항 적용\n- [ ] P3 개선사항 검토\n- [ ] 최종 코드 검증 (lint, type-check)\n- [ ] Stage 2 완료 확정"
     }
   ]
