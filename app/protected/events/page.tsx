@@ -46,7 +46,7 @@ async function EventListServer() {
             </Link>
           </div>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {hostedEvents.map((event) => {
               const memberCount = getApprovedMemberCount(event.id);
               return (
@@ -72,7 +72,7 @@ async function EventListServer() {
             </p>
           </div>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {approvedEvents.map((event) => {
               const memberCount = getApprovedMemberCount(event.id);
               return (
@@ -115,15 +115,15 @@ export default function EventsPage() {
   return (
     <div className="flex w-full flex-1 flex-col gap-8">
       {/* 페이지 헤더 */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">내 모임</h1>
-          <p className="mt-2 text-muted-foreground">
+      <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div className="flex-1">
+          <h1 className="text-2xl font-bold md:text-3xl">내 모임</h1>
+          <p className="mt-2 text-sm text-muted-foreground md:text-base">
             주최 중인 모임과 참여 중인 모임을 한눈에 확인하세요
           </p>
         </div>
-        <Link href="/protected/events/new">
-          <Button size="lg">
+        <Link href="/protected/events/new" className="w-full md:w-auto">
+          <Button size="lg" className="w-full md:w-auto">
             <Plus className="mr-2 h-4 w-4" />새 모임 만들기
           </Button>
         </Link>
