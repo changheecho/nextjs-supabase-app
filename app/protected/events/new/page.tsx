@@ -61,7 +61,7 @@ export default function CreateEventPage() {
   return (
     <div className="flex w-full flex-1 flex-col gap-8">
       <div>
-        <h1 className="text-3xl font-bold">새 모임 만들기</h1>
+        <h1 className="text-4xl font-bold">새 모임 만들기</h1>
         <p className="mt-2 text-muted-foreground">
           새로운 모임을 만들고 함께할 사람들을 초대하세요
         </p>

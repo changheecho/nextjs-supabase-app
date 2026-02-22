@@ -54,7 +54,7 @@ export function EventCard({
           <div className="flex items-start justify-between gap-2">
             <div className="flex-1">
               <div className="flex items-center gap-2">
-                <CardTitle className="line-clamp-2 text-lg">
+                <CardTitle className="line-clamp-2 text-base">
                   {event.title}
                 </CardTitle>
                 {isClosed && (
