@@ -197,13 +197,42 @@ npm install react-hook-form zod @hookform/resolvers date-fns
   4. 승인 대기: 상태 알림 메시지 ✅
   5. 승인 후: 모임 상세 페이지 + 공지 조회 ✅
 
-#### 1.5.2 초대 링크 페이지 모바일 최적화 ✅ Task 1
+#### 1.5.2 초대 링크 페이지 모바일 최적화 ✅ Task 1 + 구현 개선
 
 - [x] `app/join/[inviteCode]/page.tsx` 모바일 검증 ✅
   - 모임 카드 이미지 모바일 비율 (375px 기준) ✅
   - 제목 글씨 크기 및 줄바꿈 검증 ✅ (text-2xl md:text-3xl)
   - "참여 신청" 버튼 크기 (최소 44x44px) ✅ (48px)
   - 상하 여백 최적화 (화면 스크롤 최소화) ✅
+
+**🎨 구현 개선사항 (2026-02-25)**
+
+- [x] **이미지 배너 추가** ✅
+  - Unsplash 외부 이미지 통합 (next.config.ts에 remotePatterns 설정)
+  - 모임 시각화 개선 (높이: h-48 모바일, h-64 데스크톱)
+
+- [x] **호스트 정보 카드** ✅
+  - Avatar 컴포넌트 추가 (shadcn/ui)
+  - 호스트 이름 및 아바타 표시
+  - "호스트" 배지 추가
+
+- [x] **향상된 정보 표시** ✅
+  - 아이콘 기반 정보 카드 (Calendar, MapPin, Users 아이콘)
+  - 모임 설명 텍스트 표시
+  - 참여자 현황 표시 (승인된 참여자 수)
+
+- [x] **Server Action 추가** ✅
+  - `app/join/[inviteCode]/actions.ts`: joinEventByInviteCode
+  - 초대 코드로 자동 참여 (approved 상태)
+  - 캐시 재검증 (revalidatePath)
+
+- [x] **클라이언트 컴포넌트 분리** ✅
+  - `app/join/[inviteCode]/join-button.tsx`: 참여 버튼
+  - 로딩 상태 관리 및 에러 처리
+
+- [x] **Not Found 페이지** ✅
+  - `app/join/[inviteCode]/not-found.tsx`: 유효하지 않은 코드 처리
+  - CalendarX 아이콘, 친화적 메시지
 
 #### 1.5.3 참여자 목록 페이지 모바일 최적화 ✅ Task 3
 
@@ -228,6 +257,16 @@ npm install react-hook-form zod @hookform/resolvers date-fns
   - 키보드 팝업 시 폼 필드 가려짐 방지 ✅
   - 버튼 위치 (화면 하단 고정 또는 스크롤 내) ✅
   - iOS Safari 다크모드 입력 필드 가시성 ✅
+
+**🔐 로그인 흐름 개선 (2026-02-25)**
+
+- [x] **리다이렉트 파라미터 지원** ✅
+  - `components/login-form.tsx`: searchParams.get("redirect") 처리
+  - 초대 링크 → 로그인 → 초대 링크로 자동 복귀
+  - 경로: `/auth/login?redirect=/join/[inviteCode]`
+
+- [x] **Social Login 통합** ✅
+  - `components/social-login-button.tsx`: 동일한 리다이렉트 지원
 
 #### 1.5.6 접근성 검증 ✅ Task 1-4
 
@@ -265,6 +304,31 @@ npm install react-hook-form zod @hookform/resolvers date-fns
 - [x] `docs/STAGE1.5_PARTICIPANT_MOBILE_UX.md` - 참여자 모바일 UX 검증 리포트 ✅
 - [x] 수정된 페이지 코드 (모바일 최적화 반영) ✅
 - [x] 모바일 스크린샷 및 개선사항 목록 ✅
+
+### 🎯 핵심 구현 완료사항
+
+**파일 추가 (3개)**
+
+1. `app/join/[inviteCode]/actions.ts` - Server Action
+2. `app/join/[inviteCode]/join-button.tsx` - 클라이언트 컴포넌트
+3. `app/join/[inviteCode]/not-found.tsx` - Not Found 페이지
+
+**파일 수정 (5개)**
+
+1. `app/join/[inviteCode]/page.tsx` - 전체 UI/UX 재설계
+2. `components/login-form.tsx` - 리다이렉트 파라미터 추가
+3. `components/social-login-button.tsx` - 리다이렉트 지원
+4. `next.config.ts` - Unsplash 이미지 설정
+5. `components/ui/avatar.tsx` - shadcn/ui 컴포넌트 추가
+
+**핵심 기능**
+
+- ✅ 이미지 배너 (Unsplash 통합)
+- ✅ 호스트 정보 카드 (Avatar)
+- ✅ 아이콘 기반 정보 표시
+- ✅ Server Action을 통한 자동 참여
+- ✅ Not Found 페이지
+- ✅ 로그인 → 초대 링크 복귀 플로우
 
 ---
 

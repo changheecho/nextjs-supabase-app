@@ -1,5 +1,6 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -29,6 +30,7 @@ export function SocialLoginButton({
 }: SocialLoginButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const searchParams = useSearchParams();
 
   // 소셜 로그인 핸들러
   const handleSocialLogin = async () => {
@@ -37,11 +39,12 @@ export function SocialLoginButton({
     setError(null);
 
     try {
+      const redirectUrl = searchParams.get("redirect") || "/protected";
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
           // /auth/callback 라우트에서 처리
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectUrl)}`,
         },
       });
       if (error) throw error;

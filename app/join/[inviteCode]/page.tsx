@@ -1,18 +1,26 @@
+import { Calendar, MapPin, Users } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
+  CardDescription,
 } from "@/components/ui/card";
-import { getEventByInviteCode, getApprovedMemberCount } from "@/lib/mock-data";
-import { CATEGORY_COLOR } from "@/lib/schemas";
+import {
+  getEventByInviteCode,
+  getApprovedMemberCount,
+  getProfile,
+} from "@/lib/mock-data";
+import { createClient } from "@/lib/supabase/server";
+
+import { JoinButton } from "./join-button";
 
 interface JoinPageProps {
   params: Promise<{
@@ -33,6 +41,13 @@ async function JoinPageContent({
     notFound();
   }
 
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const hostProfile = getProfile(event.host_id);
+  const hostName = hostProfile?.full_name || "주최자";
   const memberCount = getApprovedMemberCount(event.id);
   const eventDate = new Date(event.event_date);
   const formattedDate = eventDate.toLocaleDateString("ko-KR", {
@@ -43,105 +58,97 @@ async function JoinPageContent({
     minute: "2-digit",
   });
 
-  const categoryColor =
-    CATEGORY_COLOR[event.category as keyof typeof CATEGORY_COLOR] ||
-    CATEGORY_COLOR["기타"];
-
   const isClosed = event.is_closed;
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted/50 p-4">
-      <Card className="w-full max-w-2xl">
-        <CardHeader>
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex-1">
-              <div className="flex items-center gap-2">
-                <CardTitle className="text-2xl md:text-3xl">
-                  {event.title}
-                </CardTitle>
-                {isClosed && <Badge variant="destructive">마감됨</Badge>}
-              </div>
-              <CardDescription className="mt-2">
-                모임에 초대되었습니다
-              </CardDescription>
-            </div>
-            <Badge className={categoryColor}>{event.category}</Badge>
-          </div>
-        </CardHeader>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-muted/30 p-4 font-sans md:p-8">
+      <div className="mb-6 text-center">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+          이벤트 초대
+        </h1>
+        <p className="mt-2 text-muted-foreground">
+          {hostName}님이 초대했습니다
+        </p>
+      </div>
 
-        <CardContent className="space-y-6">
-          {/* 모임 정보 */}
-          <div className="space-y-4">
-            <div>
-              <h3 className="font-semibold">설명</h3>
-              <p className="mt-2 text-muted-foreground">{event.description}</p>
-            </div>
+      <Card className="w-full max-w-[420px] overflow-hidden border-border/50 shadow-md">
+        <div className="relative h-48 w-full bg-muted">
+          <Image
+            src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=1000"
+            alt="Event thumbnail"
+            fill
+            className="object-cover"
+          />
+        </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="rounded-lg bg-muted px-4 py-4 md:px-5">
-                <p className="text-base text-muted-foreground md:text-sm">
-                  날짜 및 시간
-                </p>
-                <p className="mt-2 text-base font-semibold md:text-sm">
-                  {formattedDate}
-                </p>
-              </div>
-
-              <div className="rounded-lg bg-muted px-4 py-4 md:px-5">
-                <p className="text-base text-muted-foreground md:text-sm">
-                  장소
-                </p>
-                <p className="mt-2 text-base font-semibold md:text-sm">
-                  {event.location}
-                </p>
-              </div>
-
-              <div className="rounded-lg bg-muted px-4 py-4 md:px-5">
-                <p className="text-base text-muted-foreground md:text-sm">
-                  현재 참여자
-                </p>
-                <p className="mt-2 text-base font-semibold md:text-sm">
-                  {memberCount} / {event.max_members}명
-                </p>
-              </div>
-
-              <div className="rounded-lg bg-muted px-4 py-4 md:px-5">
-                <p className="text-base text-muted-foreground md:text-sm">
-                  상태
-                </p>
-                <p className="mt-2 text-base font-semibold md:text-sm">
-                  {isClosed ? "마감됨" : "모집 중"}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* 참여 버튼 */}
-          {isClosed ? (
-            <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-950/20">
-              <p className="text-sm text-red-700 dark:text-red-200">
-                이 모임은 마감되었습니다
-              </p>
-            </div>
-          ) : (
-            <Link href={`/auth/login?redirect=/join/${inviteCode}`}>
-              <Button size="lg" className="h-12 w-full">
-                로그인하여 참여 신청
-              </Button>
-            </Link>
-          )}
-
-          <p className="text-center text-sm text-muted-foreground">
-            계정이 없으신가요?{" "}
-            <Link
-              href={`/auth/sign-up?redirect=/join/${inviteCode}`}
-              className="underline"
-            >
-              가입하기
-            </Link>
+        <CardContent className="p-6">
+          <h2 className="text-xl font-bold text-foreground md:text-2xl">
+            {event.title}
+          </h2>
+          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+            {event.description}
           </p>
+
+          <div className="mt-8 space-y-4 text-sm font-medium">
+            <div className="flex items-center gap-3 text-muted-foreground">
+              <Calendar className="h-5 w-5 opacity-70" />
+              <span>{formattedDate}</span>
+            </div>
+            <div className="flex items-center gap-3 text-muted-foreground">
+              <MapPin className="h-5 w-5 opacity-70" />
+              <span>{event.location}</span>
+            </div>
+            <div className="flex items-center gap-3 text-muted-foreground">
+              <Users className="h-5 w-5 opacity-70" />
+              <span>참여자 {memberCount}명</span>
+            </div>
+          </div>
+
+          <div className="mt-8 flex items-center gap-3 border-t border-border/50 pt-6">
+            <Avatar className="h-10 w-10 border bg-muted">
+              <AvatarImage src={hostProfile?.avatar_url || ""} />
+              <AvatarFallback className="text-muted-foreground">
+                {hostName.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col">
+              <span className="text-sm font-semibold">{hostName}</span>
+              <span className="text-xs text-muted-foreground">호스트</span>
+            </div>
+          </div>
+
+          <div className="mt-8">
+            {isClosed ? (
+              <Button size="lg" className="w-full font-semibold" disabled>
+                마감된 모임입니다
+              </Button>
+            ) : user ? (
+              <JoinButton inviteCode={inviteCode} />
+            ) : (
+              <Link
+                href={`/auth/login?redirect=/join/${inviteCode}`}
+                className="block w-full"
+              >
+                <Button size="lg" className="w-full font-semibold">
+                  로그인하고 참여하기
+                </Button>
+              </Link>
+            )}
+          </div>
         </CardContent>
       </Card>
+
+      {!isClosed && !user && (
+        <p className="mt-6 text-center text-sm text-muted-foreground">
+          계정이 없으신가요?{" "}
+          <Link
+            href={`/auth/sign-up?redirect=/join/${inviteCode}`}
+            className="font-medium underline underline-offset-4 hover:text-primary"
+          >
+            가입하기
+          </Link>
+        </p>
+      )}
     </div>
   );
 }
