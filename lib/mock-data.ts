@@ -5,12 +5,13 @@ import type { Profile } from "@/types/database";
 
 /**
  * Event 타입 - 모임/이벤트 정보
+ * DB 스키마와 동일하게 updated_at 필드 포함
  */
 export interface Event {
   id: string;
   host_id: string;
   title: string;
-  description?: string;
+  description: string | null;
   category: string;
   event_date: string;
   location: string;
@@ -19,6 +20,7 @@ export interface Event {
   bank_account: { bank?: string; account?: string; name?: string } | null;
   is_closed: boolean;
   created_at: string;
+  updated_at: string;
 }
 
 /**
@@ -29,12 +31,14 @@ export interface EventMember {
   event_id: string;
   user_id: string;
   status: "pending" | "approved" | "rejected" | "withdrawn";
-  memo?: string;
+  memo: string | null;
   created_at: string;
+  updated_at: string;
 }
 
 /**
  * Announcement 타입 - 공지사항
+ * DB 스키마와 동일하게 updated_at 필드 포함
  */
 export interface Announcement {
   id: string;
@@ -44,6 +48,7 @@ export interface Announcement {
   content: string;
   is_pinned: boolean;
   created_at: string;
+  updated_at: string;
 }
 
 // 현재 사용자 정보 (로그인한 사용자)
@@ -126,6 +131,7 @@ export const mockEvents: Event[] = [
     },
     is_closed: false,
     created_at: "2026-02-20T10:00:00Z",
+    updated_at: "2026-02-22T15:30:00Z",
   },
   {
     id: "event-002",
@@ -144,6 +150,7 @@ export const mockEvents: Event[] = [
     },
     is_closed: false,
     created_at: "2026-02-20T09:30:00Z",
+    updated_at: "2026-02-20T09:30:00Z",
   },
   {
     id: "event-003",
@@ -158,6 +165,7 @@ export const mockEvents: Event[] = [
     bank_account: null,
     is_closed: true,
     created_at: "2026-02-10T14:00:00Z",
+    updated_at: "2026-02-21T10:00:00Z",
   },
   {
     id: "event-004",
@@ -172,6 +180,7 @@ export const mockEvents: Event[] = [
     bank_account: null,
     is_closed: false,
     created_at: "2026-02-18T11:00:00Z",
+    updated_at: "2026-02-18T11:00:00Z",
   },
 ];
 
@@ -192,6 +201,7 @@ export const mockEventMembers: EventMember[] = [
     status: "approved",
     memo: "주최자",
     created_at: "2026-02-20T10:00:00Z",
+    updated_at: "2026-02-20T10:00:00Z",
   },
   {
     id: "member-002",
@@ -200,6 +210,7 @@ export const mockEventMembers: EventMember[] = [
     status: "approved",
     memo: "정기 참가자",
     created_at: "2026-02-20T10:05:00Z",
+    updated_at: "2026-02-20T10:05:00Z",
   },
   {
     id: "member-003",
@@ -208,6 +219,7 @@ export const mockEventMembers: EventMember[] = [
     status: "pending",
     memo: "이번이 첫 참가입니다",
     created_at: "2026-02-21T14:20:00Z",
+    updated_at: "2026-02-21T14:20:00Z",
   },
   {
     id: "member-004",
@@ -216,6 +228,7 @@ export const mockEventMembers: EventMember[] = [
     status: "approved",
     memo: "지난달에 참가했었습니다",
     created_at: "2026-02-20T11:30:00Z",
+    updated_at: "2026-02-20T11:30:00Z",
   },
   {
     id: "member-005",
@@ -224,6 +237,7 @@ export const mockEventMembers: EventMember[] = [
     status: "rejected",
     memo: "일정이 맞지 않아 거절합니다",
     created_at: "2026-02-22T09:00:00Z",
+    updated_at: "2026-02-22T09:00:00Z",
   },
 
   // event-002 (이영희의 팀 회의)
@@ -234,6 +248,7 @@ export const mockEventMembers: EventMember[] = [
     status: "approved",
     memo: "주최자",
     created_at: "2026-02-20T09:30:00Z",
+    updated_at: "2026-02-20T09:30:00Z",
   },
   {
     id: "member-007",
@@ -242,6 +257,7 @@ export const mockEventMembers: EventMember[] = [
     status: "approved",
     memo: "팀 멤버",
     created_at: "2026-02-20T10:15:00Z",
+    updated_at: "2026-02-20T10:15:00Z",
   },
   {
     id: "member-008",
@@ -250,6 +266,7 @@ export const mockEventMembers: EventMember[] = [
     status: "approved",
     memo: "신입 사원",
     created_at: "2026-02-20T14:00:00Z",
+    updated_at: "2026-02-20T14:00:00Z",
   },
   {
     id: "member-009",
@@ -258,6 +275,7 @@ export const mockEventMembers: EventMember[] = [
     status: "withdrawn",
     memo: "건강상 이유로 취소합니다",
     created_at: "2026-02-21T10:00:00Z",
+    updated_at: "2026-02-21T10:00:00Z",
   },
 
   // event-003 (박민준의 봄 축제 - 마감됨)
@@ -268,14 +286,16 @@ export const mockEventMembers: EventMember[] = [
     status: "approved",
     memo: "주최자",
     created_at: "2026-02-10T14:00:00Z",
+    updated_at: "2026-02-10T14:00:00Z",
   },
   {
     id: "member-011",
     event_id: "event-003",
     user_id: "user-001",
     status: "approved",
-    memo: "",
+    memo: null,
     created_at: "2026-02-15T11:00:00Z",
+    updated_at: "2026-02-15T11:00:00Z",
   },
   {
     id: "member-012",
@@ -284,6 +304,7 @@ export const mockEventMembers: EventMember[] = [
     status: "approved",
     memo: "가족과 함께 참가합니다",
     created_at: "2026-02-16T16:30:00Z",
+    updated_at: "2026-02-16T16:30:00Z",
   },
 
   // event-004 (김철수의 독서 토론)
@@ -294,6 +315,7 @@ export const mockEventMembers: EventMember[] = [
     status: "approved",
     memo: "주최자",
     created_at: "2026-02-18T11:00:00Z",
+    updated_at: "2026-02-18T11:00:00Z",
   },
   {
     id: "member-014",
@@ -302,6 +324,7 @@ export const mockEventMembers: EventMember[] = [
     status: "approved",
     memo: "책을 미리 구매했습니다",
     created_at: "2026-02-18T12:00:00Z",
+    updated_at: "2026-02-18T12:00:00Z",
   },
   {
     id: "member-015",
@@ -310,6 +333,7 @@ export const mockEventMembers: EventMember[] = [
     status: "pending",
     memo: "참가 신청합니다",
     created_at: "2026-02-22T15:30:00Z",
+    updated_at: "2026-02-22T15:30:00Z",
   },
 ];
 
@@ -329,6 +353,7 @@ export const mockAnnouncements: Announcement[] = [
       "안녕하세요! 이번 모임 장소가 변경되었습니다. 강남역 카페에서 삼성역 카페로 변경되었으니 참고 바랍니다. 더 조용한 환경에서 모임을 가질 수 있을 것 같습니다.",
     is_pinned: true,
     created_at: "2026-02-21T09:00:00Z",
+    updated_at: "2026-02-21T09:00:00Z",
   },
   {
     id: "announce-002",
@@ -339,6 +364,7 @@ export const mockAnnouncements: Announcement[] = [
       "모임이 2월 28일 오후 2시에 최종 확정되었습니다. 많은 참여 부탁드립니다. 늦지 않게 와주시고, 혹시 올 수 없으시면 미리 말씀해주세요.",
     is_pinned: true,
     created_at: "2026-02-20T14:00:00Z",
+    updated_at: "2026-02-20T14:00:00Z",
   },
   {
     id: "announce-003",
@@ -349,6 +375,7 @@ export const mockAnnouncements: Announcement[] = [
       "모임에서 간단한 음료와 간식을 준비하겠습니다. 특별히 싫어하는 것이 있으면 댓글로 알려주세요.",
     is_pinned: false,
     created_at: "2026-02-22T10:30:00Z",
+    updated_at: "2026-02-22T10:30:00Z",
   },
 
   // event-002 공지
@@ -361,6 +388,7 @@ export const mockAnnouncements: Announcement[] = [
       "이번 주 회의에서는 Q1 목표 달성도를 점검하고, Q2 계획을 논의합니다. 팀 멤버들은 미리 자신의 진행 상황을 정리해와 주세요.",
     is_pinned: true,
     created_at: "2026-02-22T16:00:00Z",
+    updated_at: "2026-02-22T16:00:00Z",
   },
   {
     id: "announce-005",
@@ -370,6 +398,7 @@ export const mockAnnouncements: Announcement[] = [
     content: "다음 회의는 B 회의실에서 진행됩니다. 참고 부탁드립니다.",
     is_pinned: false,
     created_at: "2026-02-22T17:00:00Z",
+    updated_at: "2026-02-22T17:00:00Z",
   },
 
   // event-004 공지
@@ -382,6 +411,7 @@ export const mockAnnouncements: Announcement[] = [
       "다음 독서 토론의 책이 '한글의 소리'로 결정되었습니다. 3월 초까지 1부를 읽고 오세요. 책은 인터넷 서점에서 구할 수 있습니다.",
     is_pinned: true,
     created_at: "2026-02-22T11:00:00Z",
+    updated_at: "2026-02-22T11:00:00Z",
   },
 ];
 

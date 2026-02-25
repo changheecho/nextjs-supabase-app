@@ -14,6 +14,152 @@ export type Database = {
   }
   public: {
     Tables: {
+      announcements: {
+        Row: {
+          author_id: string
+          content: string
+          created_at: string
+          event_id: string
+          id: string
+          is_pinned: boolean
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          content: string
+          created_at?: string
+          event_id: string
+          id?: string
+          is_pinned?: boolean
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          content?: string
+          created_at?: string
+          event_id?: string
+          id?: string
+          is_pinned?: boolean
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "announcements_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "announcements_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_members: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+          memo: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          id?: string
+          memo?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: string
+          memo?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_members_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          bank_account: Json | null
+          category: string
+          created_at: string
+          description: string | null
+          event_date: string
+          host_id: string
+          id: string
+          invite_code: string
+          is_closed: boolean
+          location: string
+          max_members: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          bank_account?: Json | null
+          category: string
+          created_at?: string
+          description?: string | null
+          event_date: string
+          host_id: string
+          id?: string
+          invite_code: string
+          is_closed?: boolean
+          location: string
+          max_members?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          bank_account?: Json | null
+          category?: string
+          created_at?: string
+          description?: string | null
+          event_date?: string
+          host_id?: string
+          id?: string
+          invite_code?: string
+          is_closed?: boolean
+          location?: string
+          max_members?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "events_host_id_fkey"
+            columns: ["host_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -186,7 +332,37 @@ export const Constants = {
   },
 } as const
 
-// 편의 타입 정의
-export type Profile = Database["public"]["Tables"]["profiles"]["Row"]
-export type ProfileInsert = Database["public"]["Tables"]["profiles"]["Insert"]
-export type ProfileUpdate = Database["public"]["Tables"]["profiles"]["Update"]
+// ===== 편의 타입 정의 =====
+
+/**
+ * Profile 타입
+ */
+export type Profile = Tables<"profiles">
+export type ProfileInsert = TablesInsert<"profiles">
+export type ProfileUpdate = TablesUpdate<"profiles">
+
+/**
+ * Event 타입 - 모임 정보
+ */
+export type Event = Tables<"events">
+export type EventInsert = TablesInsert<"events">
+export type EventUpdate = TablesUpdate<"events">
+
+/**
+ * EventMember 타입 - 모임 참여자
+ */
+export type EventMember = Tables<"event_members">
+export type EventMemberInsert = TablesInsert<"event_members">
+export type EventMemberUpdate = TablesUpdate<"event_members">
+
+/**
+ * 참여자 상태 타입
+ */
+export type MemberStatus = "pending" | "approved" | "rejected" | "withdrawn"
+
+/**
+ * Announcement 타입 - 공지사항
+ */
+export type Announcement = Tables<"announcements">
+export type AnnouncementInsert = TablesInsert<"announcements">
+export type AnnouncementUpdate = TablesUpdate<"announcements">
