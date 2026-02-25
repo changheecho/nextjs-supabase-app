@@ -60,21 +60,21 @@ export default async function MembersPage({ params }: MembersPageProps) {
   return (
     <div className="flex w-full flex-1 flex-col gap-8">
       <Link href={`/protected/events/${eventId}`}>
-        <Button variant="ghost" size="sm">
+        <Button variant="ghost" size="sm" className="h-12">
           <ArrowLeft className="mr-2 h-4 w-4" />
           모임으로 돌아가기
         </Button>
       </Link>
 
       <div>
-        <h1 className="text-3xl font-bold">참여자 관리</h1>
+        <h1 className="text-2xl font-bold md:text-3xl">참여자 관리</h1>
         <p className="mt-2 text-muted-foreground">
           모임의 참여자를 상태별로 관리할 수 있습니다
         </p>
       </div>
 
       <Tabs defaultValue="all" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4">
+        <TabsList className="grid h-12 w-full grid-cols-2 md:h-10 md:grid-cols-4">
           <TabsTrigger value="all">전체 ({allMembers.length})</TabsTrigger>
           <TabsTrigger value="pending">
             대기 ({pendingMembers.length})

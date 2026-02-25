@@ -105,11 +105,11 @@ export function MemberCard({
       </CardHeader>
 
       {isOrganizerView && member.status === "pending" && (
-        <CardContent className="flex gap-2">
+        <CardContent className="flex gap-3 p-4 md:p-5">
           <Button
             variant="default"
             size="lg"
-            className="flex-1"
+            className="h-12 flex-1 md:h-10"
             disabled={isLoading}
             onClick={handleApprove}
           >
@@ -118,7 +118,7 @@ export function MemberCard({
           <Button
             variant="outline"
             size="lg"
-            className="flex-1"
+            className="h-12 flex-1 md:h-10"
             disabled={isLoading}
             onClick={handleReject}
           >
@@ -128,11 +128,11 @@ export function MemberCard({
       )}
 
       {isOrganizerView && member.status === "approved" && (
-        <CardContent>
+        <CardContent className="p-4 md:p-5">
           <Button
             variant="outline"
             size="lg"
-            className="w-full text-red-600 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950"
+            className="h-12 w-full text-red-600 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 md:h-10"
             disabled={isLoading}
             onClick={handleRemove}
           >

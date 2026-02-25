@@ -56,7 +56,9 @@ async function JoinPageContent({
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1">
               <div className="flex items-center gap-2">
-                <CardTitle className="text-3xl">{event.title}</CardTitle>
+                <CardTitle className="text-2xl md:text-3xl">
+                  {event.title}
+                </CardTitle>
                 {isClosed && <Badge variant="destructive">마감됨</Badge>}
               </div>
               <CardDescription className="mt-2">
@@ -76,26 +78,38 @@ async function JoinPageContent({
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
-              <div className="rounded-lg bg-muted p-4">
-                <p className="text-sm text-muted-foreground">날짜 및 시간</p>
-                <p className="mt-2 font-semibold">{formattedDate}</p>
+              <div className="rounded-lg bg-muted px-4 py-4 md:px-5">
+                <p className="text-base text-muted-foreground md:text-sm">
+                  날짜 및 시간
+                </p>
+                <p className="mt-2 text-base font-semibold md:text-sm">
+                  {formattedDate}
+                </p>
               </div>
 
-              <div className="rounded-lg bg-muted p-4">
-                <p className="text-sm text-muted-foreground">장소</p>
-                <p className="mt-2 font-semibold">{event.location}</p>
+              <div className="rounded-lg bg-muted px-4 py-4 md:px-5">
+                <p className="text-base text-muted-foreground md:text-sm">
+                  장소
+                </p>
+                <p className="mt-2 text-base font-semibold md:text-sm">
+                  {event.location}
+                </p>
               </div>
 
-              <div className="rounded-lg bg-muted p-4">
-                <p className="text-sm text-muted-foreground">현재 참여자</p>
-                <p className="mt-2 font-semibold">
+              <div className="rounded-lg bg-muted px-4 py-4 md:px-5">
+                <p className="text-base text-muted-foreground md:text-sm">
+                  현재 참여자
+                </p>
+                <p className="mt-2 text-base font-semibold md:text-sm">
                   {memberCount} / {event.max_members}명
                 </p>
               </div>
 
-              <div className="rounded-lg bg-muted p-4">
-                <p className="text-sm text-muted-foreground">상태</p>
-                <p className="mt-2 font-semibold">
+              <div className="rounded-lg bg-muted px-4 py-4 md:px-5">
+                <p className="text-base text-muted-foreground md:text-sm">
+                  상태
+                </p>
+                <p className="mt-2 text-base font-semibold md:text-sm">
                   {isClosed ? "마감됨" : "모집 중"}
                 </p>
               </div>
@@ -111,7 +125,7 @@ async function JoinPageContent({
             </div>
           ) : (
             <Link href={`/auth/login?redirect=/join/${inviteCode}`}>
-              <Button size="lg" className="w-full">
+              <Button size="lg" className="h-12 w-full">
                 로그인하여 참여 신청
               </Button>
             </Link>

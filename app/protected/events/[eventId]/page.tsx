@@ -1,24 +1,17 @@
-import { ArrowLeft, MapPin, Users } from "lucide-react";
-import Link from "next/link";
+import { format } from "date-fns";
+import { ko } from "date-fns/locale";
+import { Calendar, Edit, MapPin, Share2, Trash2, Users } from "lucide-react";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
-import { CopyInviteLinkButton } from "@/components/events/copy-invite-link-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
   getApprovedMemberCount,
-  getEventAnnouncements,
+  getEventMembers,
+  getProfile,
   mockEvents,
 } from "@/lib/mock-data";
-import { CATEGORY_COLOR } from "@/lib/schemas";
 
 interface EventDetailPageProps {
   params: Promise<{
@@ -27,11 +20,9 @@ interface EventDetailPageProps {
 }
 
 /**
- * 모임 홈 페이지
+ * 이벤트 상세 내역 렌더링을 담당하는 서버 컴포넌트
  */
-export default async function EventDetailPage({
-  params,
-}: EventDetailPageProps) {
+async function EventDetailContent({ params }: EventDetailPageProps) {
   const { eventId } = await params;
 
   // 모임 조회
@@ -42,224 +33,175 @@ export default async function EventDetailPage({
   }
 
   const memberCount = getApprovedMemberCount(eventId);
-  const announcements = getEventAnnouncements(eventId);
-  const pinnedAnnouncement = announcements.find((a) => a.is_pinned);
+  const eventMembers = getEventMembers(eventId).filter(
+    (member) => member.status === "approved",
+  );
 
   const eventDate = new Date(event.event_date);
-  const formattedDate = eventDate.toLocaleDateString("ko-KR", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
+  const now = new Date();
+
+  // 날짜 형식: 2025년 10월 21일 오후 02:59
+  const formattedDate = format(eventDate, "yyyy년 MM월 dd일 a hh:mm", {
+    locale: ko,
   });
 
-  const categoryColor =
-    CATEGORY_COLOR[event.category as keyof typeof CATEGORY_COLOR] ||
-    CATEGORY_COLOR["기타"];
-
   const isClosed = event.is_closed;
+  let statusBadge = "예정";
+
+  if (isClosed) {
+    statusBadge = "종료";
+  } else if (eventDate < now) {
+    statusBadge = "진행 중";
+  }
 
   return (
-    <div className="flex w-full flex-1 flex-col gap-8">
-      {/* 뒤로가기 */}
-      <Link href="/protected/events">
-        <Button variant="ghost" size="sm">
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          모임 목록으로
-        </Button>
-      </Link>
+    <div className="flex w-full flex-1 flex-col gap-6 pb-12">
+      {/* 썸네일 이미지 영역 */}
+      <div className="-mx-5 -mt-10 mb-2 h-48 overflow-hidden bg-muted md:h-64">
+        <img
+          src={`https://picsum.photos/seed/${event.id}/800/400`}
+          alt={event.title}
+          className="h-full w-full object-cover"
+        />
+      </div>
 
       {/* 모임 기본 정보 헤더 */}
-      <div className="space-y-4">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex-1">
-            <div className="flex items-center gap-2">
-              <h1 className="text-4xl font-bold">{event.title}</h1>
-              {isClosed && (
-                <Badge variant="destructive" className="whitespace-nowrap">
-                  마감됨
-                </Badge>
-              )}
-            </div>
-            <p className="mt-2 text-muted-foreground">{event.description}</p>
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between gap-4">
+          <h1 className="text-xl font-bold tracking-tight text-zinc-900 md:text-2xl lg:text-3xl">
+            {event.title}
+          </h1>
+          <Badge
+            variant={statusBadge === "종료" ? "outline" : "secondary"}
+            className={`whitespace-nowrap px-2 py-0.5 text-xs font-medium ${
+              statusBadge === "예정"
+                ? "bg-zinc-800 text-white hover:bg-zinc-700"
+                : ""
+            }`}
+          >
+            {statusBadge}
+          </Badge>
+        </div>
+        <p className="text-[15px] leading-relaxed text-zinc-500">
+          {event.description || "등록된 설명이 없습니다."}
+        </p>
+      </div>
+
+      {/* 액션 버튼 */}
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-3 md:gap-2">
+        <Button
+          variant="outline"
+          className="h-12 bg-zinc-50/50 text-zinc-600 md:h-10"
+        >
+          <Edit className="mr-2 h-4 w-4" /> 수정
+        </Button>
+        <Button
+          variant="outline"
+          className="h-12 bg-zinc-50/50 text-zinc-600 md:h-10"
+        >
+          <Share2 className="mr-2 h-4 w-4" /> 공유
+        </Button>
+        <Button
+          variant="outline"
+          className="h-12 bg-zinc-50/50 text-zinc-600 md:h-10"
+        >
+          <Trash2 className="mr-2 h-4 w-4" /> 삭제
+        </Button>
+      </div>
+
+      {/* 상세 정보 카드 */}
+      <div className="mt-2 flex flex-col gap-4 rounded-xl border border-zinc-200/60 bg-zinc-50/30 p-5 md:gap-5">
+        <div className="flex items-start gap-4">
+          <Calendar className="mt-0.5 h-5 w-5 text-zinc-400" />
+          <div className="flex flex-col gap-1">
+            <span className="text-[13px] text-zinc-500">날짜 및 시간</span>
+            <span className="text-[15px] font-medium text-zinc-800">
+              {formattedDate}
+            </span>
           </div>
-          <Badge className={categoryColor}>{event.category}</Badge>
         </div>
 
-        {/* 모임 정보 카드 */}
-        <div className="grid gap-4 md:grid-cols-2">
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-3">
-                <div className="flex-1">
-                  <p className="text-sm text-muted-foreground">날짜 및 시간</p>
-                  <p className="text-lg font-semibold">{formattedDate}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+        <div className="flex items-start gap-4">
+          <MapPin className="mt-0.5 h-5 w-5 text-zinc-400" />
+          <div className="flex flex-col gap-1">
+            <span className="text-[13px] text-zinc-500">장소</span>
+            <span className="text-[15px] font-medium text-zinc-800">
+              {event.location}
+            </span>
+          </div>
+        </div>
 
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-3">
-                <MapPin className="h-5 w-5 text-muted-foreground" />
-                <div className="flex-1">
-                  <p className="text-sm text-muted-foreground">장소</p>
-                  <p className="text-lg font-semibold">{event.location}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-3">
-                <Users className="h-5 w-5 text-muted-foreground" />
-                <div className="flex-1">
-                  <p className="text-sm text-muted-foreground">참여자</p>
-                  <p className="text-lg font-semibold">
-                    {memberCount} / {event.max_members}명
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="pt-6">
-              <CopyInviteLinkButton inviteCode={event.invite_code} />
-            </CardContent>
-          </Card>
+        <div className="flex items-start gap-4">
+          <Users className="mt-0.5 h-5 w-5 text-zinc-400" />
+          <div className="flex flex-col gap-1">
+            <span className="text-[13px] text-zinc-500">참여자</span>
+            <span className="text-[15px] font-medium text-zinc-800">
+              {memberCount}명 참여
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* 핀 공지 영역 */}
-      {pinnedAnnouncement && (
-        <Card className="border-2 border-blue-400 bg-blue-50 dark:border-blue-600 dark:bg-blue-950/20">
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <CardTitle className="text-lg">📌 공지</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <h3 className="font-semibold">{pinnedAnnouncement.title}</h3>
-            <p className="mt-2 text-sm text-muted-foreground">
-              {pinnedAnnouncement.content}
-            </p>
-          </CardContent>
-        </Card>
-      )}
+      {/* 초대 코드 카드 */}
+      <div className="flex flex-col gap-4 rounded-xl border border-zinc-200/60 bg-zinc-50/30 p-5 md:gap-5">
+        <span className="text-[13px] text-zinc-500">초대 코드</span>
+        <div className="rounded-md bg-zinc-200/50 px-3 py-2.5">
+          <span className="text-[15px] font-medium tracking-widest text-zinc-800">
+            {event.invite_code}
+          </span>
+        </div>
+        <span className="text-[12px] text-zinc-500">
+          이 코드로 다른 사람을 초대할 수 있어요
+        </span>
+      </div>
 
-      {/* 탭 네비게이션 */}
-      <Tabs defaultValue="home" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="home">홈</TabsTrigger>
-          <TabsTrigger value="announcements">공지</TabsTrigger>
-          <TabsTrigger value="members">참여자</TabsTrigger>
-          <TabsTrigger value="carpool">카풀</TabsTrigger>
-          <TabsTrigger value="settlement">정산</TabsTrigger>
-        </TabsList>
+      {/* 참여자 목록 */}
+      <div className="flex flex-col gap-4 rounded-xl border border-zinc-200/60 bg-zinc-50/30 p-5 md:gap-5">
+        <h3 className="mb-1 text-[15px] font-bold text-zinc-800">
+          참여자 목록
+        </h3>
+        <div className="flex flex-col gap-4 md:gap-5">
+          {eventMembers.map((member) => {
+            const profile = getProfile(member.user_id);
+            const isHost = member.user_id === event.host_id;
+            // 랜덤 이모지 생성 (1~6번 프로필)
+            const emojiAvatar = ["🧑‍💻", "🕶️", "👱‍♂️", "👩", "👨‍🦱", "🥷"][
+              member.user_id.charCodeAt(member.user_id.length - 1) % 6
+            ];
 
-        {/* 홈 탭 */}
-        <TabsContent value="home" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>모임 정보</CardTitle>
-              <CardDescription>이 모임에 대한 기본 정보입니다</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <h4 className="font-semibold">설명</h4>
-                <p className="mt-2 text-muted-foreground">
-                  {event.description || "설명이 없습니다"}
-                </p>
-              </div>
-              {event.bank_account && (
-                <div>
-                  <h4 className="font-semibold">정산 계좌</h4>
-                  <p className="mt-2 text-muted-foreground">
-                    {event.bank_account.bank} {event.bank_account.account}(
-                    {event.bank_account.name})
-                  </p>
+            return (
+              <div
+                key={member.id}
+                className="flex items-center justify-between"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-200/50 text-xl">
+                    {emojiAvatar}
+                  </div>
+                  <span className="text-[16px] font-medium text-zinc-800">
+                    {profile?.full_name || "알 수 없음"}
+                  </span>
                 </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* 공지 탭 */}
-        <TabsContent value="announcements">
-          <Card>
-            <CardHeader>
-              <CardTitle>공지사항</CardTitle>
-              <CardDescription>모임의 공지사항 목록입니다</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                공지 탭은 /protected/events/[eventId]/announcements 페이지에서
-                구현됩니다
-              </p>
-              <Link href={`/protected/events/${eventId}/announcements`}>
-                <Button className="mt-4">공지 보기</Button>
-              </Link>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* 참여자 탭 */}
-        <TabsContent value="members">
-          <Card>
-            <CardHeader>
-              <CardTitle>참여자</CardTitle>
-              <CardDescription>모임의 참여자 목록입니다</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                참여자 탭은 /protected/events/[eventId]/members 페이지에서
-                구현됩니다
-              </p>
-              <Link href={`/protected/events/${eventId}/members`}>
-                <Button className="mt-4">참여자 보기</Button>
-              </Link>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* 카풀 탭 */}
-        <TabsContent value="carpool">
-          <Card>
-            <CardHeader>
-              <CardTitle>카풀</CardTitle>
-              <CardDescription>
-                모임의 카풀 정보입니다 (Phase 2 기능)
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                카풀 기능은 Phase 2에서 구현될 예정입니다
-              </p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* 정산 탭 */}
-        <TabsContent value="settlement">
-          <Card>
-            <CardHeader>
-              <CardTitle>정산</CardTitle>
-              <CardDescription>
-                모임의 정산 정보입니다 (Phase 2 기능)
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                정산 기능은 Phase 2에서 구현될 예정입니다
-              </p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+                {isHost && (
+                  <span className="rounded bg-zinc-200/50 px-2 py-1 text-[11px] font-medium text-zinc-600">
+                    호스트
+                  </span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
+  );
+}
+
+export default function EventDetailPage({ params }: EventDetailPageProps) {
+  return (
+    <Suspense
+      fallback={<div className="p-8 text-center text-zinc-500">로딩 중...</div>}
+    >
+      <EventDetailContent params={params} />
+    </Suspense>
   );
 }

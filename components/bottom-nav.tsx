@@ -1,20 +1,22 @@
 "use client";
 
-import { CalendarHeart, LogOut, PlusCircle, User } from "lucide-react";
+import { Home, Calendar, PlusCircle, User } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-
-import { createClient } from "@/lib/supabase/client";
+import { usePathname } from "next/navigation";
 
 export function BottomNav() {
   const pathname = usePathname();
-  const router = useRouter();
 
   const navItems = [
     {
+      name: "홈",
+      href: "/protected", // 메인으로 /protected를 사용하거나, 별도 홈이 있다면 수정 필요
+      icon: Home,
+    },
+    {
       name: "이벤트",
       href: "/protected/events",
-      icon: CalendarHeart,
+      icon: Calendar,
     },
     {
       name: "새 이벤트",
@@ -23,21 +25,17 @@ export function BottomNav() {
     },
     {
       name: "프로필",
-      href: "/protected",
+      href: "/protected/profile", // 프로필 페이지 경로 (현재 /protected 이지만, 위 홈과 분리 필요 시 조정)
       icon: User,
     },
   ];
 
-  const handleLogout = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    router.push("/auth/login");
-  };
-
   return (
-    <div className="pb-safe w-full border-t border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <div className="pb-safe w-full border-t border-zinc-200/60 bg-white">
       <nav className="flex h-16 w-full items-center justify-around px-2">
         {navItems.map((item) => {
+          // 현재 /protected 와 /protected/profile 등 경로 중복 처리를 위해 단순 startsWith 사용하지 않고 정확한 매칭
+          // 다만 데모 상 홈과 프로필 경로가 불분명하므로, 임시로 처리
           const isActive = pathname === item.href;
           const Icon = item.icon;
 
@@ -45,28 +43,17 @@ export function BottomNav() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-1 flex-col items-center justify-center gap-1 py-1 transition-colors ${
+              className={`flex flex-1 flex-col items-center justify-center gap-1.5 py-1 ${
                 isActive
-                  ? "text-primary"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "font-bold text-zinc-900"
+                  : "font-medium text-zinc-400"
               }`}
             >
-              <Icon
-                size={22}
-                strokeWidth={isActive ? 2.5 : 2}
-                className={isActive ? "scale-110 transition-transform" : ""}
-              />
-              <span className="text-[10px] font-medium">{item.name}</span>
+              <Icon size={22} strokeWidth={isActive ? 2.5 : 2} />
+              <span className="text-[11px]">{item.name}</span>
             </Link>
           );
         })}
-        <button
-          onClick={handleLogout}
-          className="flex flex-1 flex-col items-center justify-center gap-1 py-1 text-muted-foreground transition-colors hover:text-destructive"
-        >
-          <LogOut size={22} strokeWidth={2} />
-          <span className="text-[10px] font-medium">로그아웃</span>
-        </button>
       </nav>
     </div>
   );

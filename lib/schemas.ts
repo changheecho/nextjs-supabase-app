@@ -13,6 +13,14 @@ export const eventCreateSchema = z.object({
     .min(2, "제목은 최소 2자 이상이어야 합니다")
     .max(100, "제목은 최대 100자입니다"),
 
+  description: z.string().max(1000, "설명은 최대 1000자입니다").optional(),
+
+  cover_image_url: z
+    .string()
+    .url("올바른 URL 형식이어야 합니다")
+    .optional()
+    .or(z.literal("")),
+
   category: z
     .string()
     .min(1, "카테고리는 필수입니다")

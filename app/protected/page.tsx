@@ -1,105 +1,68 @@
-import { InfoIcon } from "lucide-react";
-import { redirect } from "next/navigation";
-import { Suspense } from "react";
+import { Calendar, Link as LinkIcon, Users } from "lucide-react";
+import Link from "next/link";
 
-import { ProfileCard } from "@/components/profile-card";
-import { ProfileEditForm } from "@/components/profile-edit-form";
-import { createClient } from "@/lib/supabase/server";
-import { Profile } from "@/types/database";
+import { Button } from "@/components/ui/button";
 
-// 사용자 프로필 정보를 조회하는 서버 컴포넌트
-async function UserProfile() {
-  const supabase = await createClient();
-
-  // JWT claims에서 사용자 ID와 이메일 추출
-  const { data: claimsData, error: claimsError } =
-    await supabase.auth.getClaims();
-
-  if (claimsError || !claimsData?.claims) {
-    redirect("/auth/login");
-  }
-
-  const userId = claimsData.claims.sub as string;
-  const userEmail = claimsData.claims.email as string;
-
-  // profiles 테이블에서 사용자 프로필 조회
-  const { data: profile, error: profileError } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", userId)
-    .single<Profile>();
-
-  if (profileError) {
-    console.error("프로필 조회 실패:", profileError);
-    redirect("/auth/login");
-  }
-
-  return {
-    profile,
-    email: userEmail,
-  };
-}
-
-// 프로필 정보를 렌더링하는 클라이언트 컴포넌트
-function ProfileContent({
-  profile,
-  email,
-}: {
-  profile: Profile;
-  email: string;
-}) {
+export default function HomePage() {
   return (
-    <div className="flex flex-col gap-8">
-      <div>
-        <h2 className="mb-4 text-2xl font-bold">프로필 정보</h2>
-        <ProfileCard profile={profile} email={email} />
+    <div className="flex w-full flex-1 flex-col items-center justify-center gap-12 px-4 pb-20 pt-10 text-center">
+      {/* 타이틀 영역 */}
+      <div className="flex flex-col gap-3">
+        <h1 className="text-4xl font-extrabold tracking-tight text-zinc-900">
+          Gather
+        </h1>
+        <p className="text-[15px] font-medium text-zinc-500">
+          초대 링크 하나로 모든 것을 해결하는 일회성 이벤트 관리 플랫폼
+        </p>
       </div>
 
-      <div>
-        <h2 className="mb-4 text-2xl font-bold">프로필 수정</h2>
-        <ProfileEditForm profile={profile} />
-      </div>
-    </div>
-  );
-}
+      {/* 특징 설명 카드 영역 */}
+      <div className="flex w-full max-w-3xl flex-col items-stretch justify-center gap-4 md:flex-row">
+        {/* 카드 1 */}
+        <div className="flex flex-1 flex-col items-center justify-center gap-3 rounded-2xl border border-zinc-200/60 bg-zinc-50/50 p-6 shadow-sm">
+          <Calendar className="h-8 w-8 text-zinc-700" strokeWidth={1.5} />
+          <h3 className="text-[15px] font-bold text-zinc-800">
+            간편한 이벤트 생성
+          </h3>
+          <p className="text-[13px] leading-relaxed text-zinc-500">
+            제목, 날짜, 장소만 입력하면 즉시 이벤트 생성
+          </p>
+        </div>
 
-// 로딩 중 보여줄 폴백 UI
-function ProfileSkeleton() {
-  return (
-    <div className="flex flex-col gap-8">
-      <div>
-        <h2 className="mb-4 text-2xl font-bold">프로필 정보</h2>
-        <div className="h-32 animate-pulse rounded-lg bg-muted" />
-      </div>
+        {/* 카드 2 */}
+        <div className="flex flex-1 flex-col items-center justify-center gap-3 rounded-2xl border border-zinc-200/60 bg-zinc-50/50 p-6 shadow-sm">
+          <LinkIcon className="h-8 w-8 text-zinc-700" strokeWidth={1.5} />
+          <h3 className="text-[15px] font-bold text-zinc-800">
+            원클릭 초대 시스템
+          </h3>
+          <p className="text-[13px] leading-relaxed text-zinc-500">
+            자동 생성된 초대 링크를 카카오톡으로 간편 공유
+          </p>
+        </div>
 
-      <div>
-        <h2 className="mb-4 text-2xl font-bold">프로필 수정</h2>
-        <div className="h-64 animate-pulse rounded-lg bg-muted" />
-      </div>
-    </div>
-  );
-}
-
-export default function ProtectedPage() {
-  return (
-    <div className="flex w-full flex-1 flex-col gap-12">
-      <div className="w-full">
-        <div className="flex items-center gap-3 rounded-md bg-accent p-3 px-5 text-sm text-foreground">
-          <InfoIcon size="16" strokeWidth={2} />
-          인증된 사용자만 접근할 수 있는 보호된 페이지입니다.
+        {/* 카드 3 */}
+        <div className="flex flex-1 flex-col items-center justify-center gap-3 rounded-2xl border border-zinc-200/60 bg-zinc-50/50 p-6 shadow-sm">
+          <Users className="h-8 w-8 text-zinc-700" strokeWidth={1.5} />
+          <h3 className="text-[15px] font-bold text-zinc-800">
+            실시간 참여자 관리
+          </h3>
+          <p className="text-[13px] leading-relaxed text-zinc-500">
+            참여자 목록 자동 업데이트로 현황 파악
+          </p>
         </div>
       </div>
 
-      <Suspense fallback={<ProfileSkeleton />}>
-        <ProfileContentAsync />
-      </Suspense>
+      {/* 이벤트 시작 버튼 영역 */}
+      <div className="mt-4 flex flex-col items-center gap-6">
+        <Link href="/protected/events/new">
+          <Button className="h-12 rounded-xl bg-zinc-900 px-8 text-[15px] font-medium text-white hover:bg-zinc-800">
+            Google로 시작하기
+          </Button>
+        </Link>
+        <p className="text-[12px] font-medium text-zinc-400">
+          5-30명 규모의 소규모 이벤트에 최적화된 플랫폼
+        </p>
+      </div>
     </div>
   );
-}
-
-// 데이터 페칭을 담당하는 별도의 서버 컴포넌트
-async function ProfileContentAsync() {
-  const { profile, email } = await UserProfile();
-
-  return <ProfileContent profile={profile} email={email} />;
 }

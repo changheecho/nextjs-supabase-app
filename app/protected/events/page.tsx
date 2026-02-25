@@ -3,10 +3,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 
 import { EventCard } from "@/components/events/event-card";
-import {
-  EventCardSkeletonList,
-  PageHeaderSkeleton,
-} from "@/components/events/loading-skeleton";
+import { EventCardSkeletonList } from "@/components/events/loading-skeleton";
 import { Button } from "@/components/ui/button";
 import {
   getApprovedEvents,
@@ -30,14 +27,26 @@ async function EventListServer() {
   // 탭 상태에 따른 필터링 (클라이언트에서 처리하므로 여기서는 모든 데이터 전달)
   return (
     <div className="space-y-4 md:space-y-6 lg:space-y-8">
-      {/* 주최한 모임 섹션 */}
+      {/* 헤더 섹션 */}
+      <div className="pb-2">
+        <h1 className="text-2xl font-bold tracking-tight">내 이벤트</h1>
+        <p className="mt-1 text-sm text-zinc-500">
+          참여하거나 호스팅하는 이벤트를 관리하세요
+        </p>
+      </div>
+
+      {/* 내가 만든 이벤트 섹션 */}
       <section>
-        <h2 className="mb-4 text-xl font-semibold">내가 주최한 모임</h2>
+        <div className="mb-4">
+          <h2 className="text-[15px] font-bold text-zinc-800">
+            내가 만든 이벤트
+          </h2>
+        </div>
         {hostedEvents.length === 0 ? (
           <div className="rounded-lg border border-dashed bg-muted/50 p-8 text-center">
-            <h3 className="font-semibold">주최한 모임이 없습니다</h3>
+            <h3 className="font-semibold">만든 이벤트가 없습니다</h3>
             <p className="mt-1 text-sm text-muted-foreground">
-              새로운 모임을 만들어보세요.
+              새로운 이벤트를 만들어보세요.
             </p>
             <Link href="/protected/events/new" className="mt-4 inline-block">
               <Button>
@@ -46,7 +55,7 @@ async function EventListServer() {
             </Link>
           </div>
         ) : (
-          <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="flex w-full flex-col gap-3">
             {hostedEvents.map((event) => {
               const memberCount = getApprovedMemberCount(event.id);
               return (
@@ -61,18 +70,22 @@ async function EventListServer() {
         )}
       </section>
 
-      {/* 참여 중인 모임 섹션 */}
+      {/* 내가 참여한 이벤트 섹션 */}
       <section>
-        <h2 className="mb-4 text-xl font-semibold">참여 중인 모임</h2>
+        <div className="mb-4">
+          <h2 className="text-[15px] font-bold text-zinc-800">
+            내가 참여한 이벤트
+          </h2>
+        </div>
         {approvedEvents.length === 0 ? (
           <div className="rounded-lg border border-dashed bg-muted/50 p-8 text-center">
-            <h3 className="font-semibold">참여 중인 모임이 없습니다</h3>
+            <h3 className="font-semibold">참여한 이벤트가 없습니다</h3>
             <p className="mt-1 text-sm text-muted-foreground">
-              초대 링크를 통해 모임에 참여해보세요.
+              초대 링크를 통해 이벤트에 참여해보세요.
             </p>
           </div>
         ) : (
-          <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="flex w-full flex-col gap-3">
             {approvedEvents.map((event) => {
               const memberCount = getApprovedMemberCount(event.id);
               return (
@@ -113,7 +126,7 @@ function EventsPageSkeleton() {
  */
 export default function EventsPage() {
   return (
-    <div className="flex w-full flex-1 flex-col gap-8">
+    <div className="flex w-full flex-1 flex-col gap-8 pb-10">
       {/* 모임 목록 */}
       <Suspense fallback={<EventsPageSkeleton />}>
         <EventListServer />
